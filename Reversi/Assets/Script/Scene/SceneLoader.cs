@@ -16,7 +16,7 @@ namespace Scene
         private Dictionary<SceneName, string> SceneNames = new Dictionary<SceneName, string>()
         {
             {SceneName.Title,         "Title"},
-            {SceneName.Puzzle,        "Puzzle"},
+            {SceneName.Reversi,       "Reversi"},
             {SceneName.GameOver,      "GameOver"}
         };
         #endregion
@@ -26,7 +26,7 @@ namespace Scene
         public enum SceneName
         {
             Title,
-            Puzzle,
+            Reversi,
             GameOver
         }
 
