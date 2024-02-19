@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Reversi
 {
@@ -7,13 +8,24 @@ namespace Reversi
     /// </summary>
     public class ReversiStone : MonoBehaviour
     {
+        #region SerializeField
+        [SerializeField] private Sprite blackSprite;
+        [SerializeField] private Sprite whiteSprite;
+        [SerializeField] private Image stoneImg;
+        #endregion
+
         #region PublicMethod
         /// <summary>
         /// 初期化
         /// </summary>
-        public void Init(StoneType type)
+        public void Init(StoneType stoneType)
         {
-            // Todo: 石の状態を設定する
+            stoneImg.sprite = stoneType == StoneType.Black ? blackSprite : whiteSprite;
+        }
+
+        public void Flip()
+        {
+            stoneImg.sprite = stoneImg.sprite == blackSprite ? whiteSprite : blackSprite;
         }
         #endregion
     }
