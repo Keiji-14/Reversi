@@ -17,18 +17,18 @@ namespace Reversi
         #endregion
 
         #region PrivateField
-        /// <summary>盤面マスの座標情報/// </summary>
+        /// <summary>盤面マスの座標情報 </summary>
         private SquareInfo squareInfo;
-        /// <summary>オセロの石/// </summary>
+        /// <summary>オセロの石</summary>
         private ReversiStone reversiStone;
-        /// <summary>マスに置かれている石のタイプ/// </summary>
+        /// <summary>マスに置かれている石のタイプ </summary>
         private StoneType stoneType;
         #endregion
 
         #region SerializeField
-        /// <summary>ハイライト表示に使用するオブジェクト/// </summary>
+        /// <summary>ハイライト表示に使用するオブジェクト </summary>
         [SerializeField] private GameObject highlightObj;
-        /// <summary>マスを押すボタン/// </summary>
+        /// <summary>マスを押すボタン </summary>
         [SerializeField] private Button boardSquareBtn;
         #endregion
 
@@ -39,6 +39,7 @@ namespace Reversi
         public void Init(int row, int col)
         {
             squareInfo = new SquareInfo(row, col);
+            stoneType = StoneType.UnSetStone;
         }
 
         /// <summary>
@@ -57,6 +58,14 @@ namespace Reversi
         }
 
         /// <summary>
+        /// 石のタイプを反転させる処理
+        /// </summary>
+        public void FlipStone()
+        {
+            stoneType = stoneType == StoneType.Black ? StoneType.White : StoneType.Black;
+        }
+
+        /// <summary>
         /// 盤面のマスをハイライトするかどうか
         /// </summary>
         public void HighlightSquare(bool isValidMove)
@@ -69,23 +78,28 @@ namespace Reversi
         /// </summary>
         public bool SettedStone()
         {
-            if (reversiStone != null)
-            {
-                return true;
-            }
-            return false;
+            return reversiStone != null && stoneType != StoneType.UnSetStone;
         }
 
+        /// <summary>
+        /// 盤面マスの座標情報を返す
+        /// </summary>
         public SquareInfo GetSquareInfo()
         {
             return squareInfo;
         }
 
+        /// <summary>
+        /// 盤面マスに置かれている石を返す
+        /// </summary>
         public ReversiStone GetStone()
         {
             return reversiStone;
         }
 
+        /// <summary>
+        /// 盤面マスに置かれている石のタイプを返す
+        /// </summary>
         public StoneType GetStoneType()
         {
             return stoneType;

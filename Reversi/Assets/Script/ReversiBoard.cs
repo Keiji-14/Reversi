@@ -74,7 +74,7 @@ namespace Reversi
 
             squareObj.setStoneObservable.Subscribe(squareInfo =>
             {
-                PlaceStone(reversiStone, stoneTypeTurns, squareInfo.row, squareInfo.col);
+                PlaceStone(reversiStone, squareInfo.row, squareInfo.col);
             }).AddTo(this);
 
             boardSquares[row, col] = squareObj;
@@ -112,36 +112,37 @@ namespace Reversi
                 var row = boardSquare.GetSquareInfo().row;
                 var col = boardSquare.GetSquareInfo().col;
 
-                var type = boardSquare.GetStoneType();
-
-                boardSquare.HighlightSquare(IsValidMove(row, col, type));
+                boardSquare.HighlightSquare(IsValidMove(row, col, stoneTypeTurns));
             }
         }
 
         /// <summary>
         /// 盤面の石を配置する処理
         /// </summary
-        private void PlaceStone(ReversiStone stoneObj, StoneType stoneType, int row, int col)
+        private void PlaceStone(ReversiStone stoneObj, int row, int col)
         {
-            if (IsValidMove(row, col, stoneType)) 
+            if (IsValidMove(row, col, stoneTypeTurns)) 
             {
                 ReversiStone stone = Instantiate(stoneObj, stoneGroup);
-                boardSquares[row, col].SetStone(stone, stoneType); // 石を配置
+                boardSquares[row, col].SetStone(stone, stoneTypeTurns);
 
                 // 反転処理
-                FlipStones(row, col, stoneType);
+                FlipStones(row, col, stoneTypeTurns);
 
                 // 手番を交代する
-                GetOpponentType(stoneTypeTurns);
+                stoneTypeTurns = GetOpponentType(stoneTypeTurns);
 
                 // ハイライト表示を更新する
                 HighlightPlaceStone();
             }
         }
 
-        // 指定された位置に石を置けるかどうかを判定するメソッド
+        /// <summary>
+        /// 指定された位置に石を置けるかどうかを判定する
+        /// </summary>
         public bool IsValidMove(int row, int col, StoneType stoneType)
         {
+            // 既に石が置かれているかどうかの判定
             if (boardSquares[row, col].SettedStone())
             {
                 return false;
@@ -162,14 +163,14 @@ namespace Reversi
                     bool canFlip = false;
 
                     // 反転できる相手の石があれば置ける
-                    while (IsInsideBoard(r, c) && boardSquares[r, c].SettedStone() && boardSquares[r, c].GetStoneType() == GetOpponentType(stoneType))
+                    while (IsInsideBoard(r, c) && boardSquares[r, c].SettedStone() && boardSquares[r, c].GetStoneType() != stoneType)
                     {
                         canFlip = true;
                         r += dr;
                         c += dc;
                     }
 
-                    if (canFlip)
+                    if (canFlip && IsInsideBoard(r, c) && boardSquares[r, c].GetStoneType() == stoneType)
                     {
                         return true;
                     }
@@ -179,6 +180,9 @@ namespace Reversi
             return false;
         }
 
+        /// <summary>
+        /// 石の反転を行う処理
+        /// </summary>
         private void FlipStones(int row, int col, StoneType stoneType)
         {
             for (int dr = -1; dr <= 1; dr++)
@@ -203,14 +207,16 @@ namespace Reversi
                     }
 
                     // 反転処理
-                    if (canFlip)
+                    if (canFlip && IsInsideBoard(r, c) && boardSquares[r, c].SettedStone() && boardSquares[r, c].GetStoneType() == stoneType)
                     {
                         r = row + dr;
                         c = col + dc;
 
                         while (IsInsideBoard(r, c) && boardSquares[r, c].SettedStone() && boardSquares[r, c].GetStoneType() == GetOpponentType(stoneType))
                         {
-                            boardSquares[r, c].GetStone().Flip(); // 石を反転
+                            // 石を反転する
+                            boardSquares[r, c].GetStone().Flip();
+                            boardSquares[r, c].FlipStone();
                             r += dr;
                             c += dc;
                         }
@@ -218,12 +224,18 @@ namespace Reversi
                 }
             }
         }
-        
+
+        /// <summary>
+        /// 盤面の外にはみ出していないかの判定を返す
+        /// </summary>
         private bool IsInsideBoard(int row, int col)
         {
             return row >= 0 && row < boardSize && col >= 0 && col < boardSize;
         }
 
+        /// <summary>
+        /// 反転した石のタイプを返す
+        /// </summary>
         private StoneType GetOpponentType(StoneType stoneType)
         {
             return stoneType == StoneType.Black ? StoneType.White : StoneType.Black;

@@ -8,7 +8,8 @@ namespace Reversi
     public enum StoneType
     {
         Black,
-        White
+        White,
+        UnSetStone,
     }
 
     /// <summary>
