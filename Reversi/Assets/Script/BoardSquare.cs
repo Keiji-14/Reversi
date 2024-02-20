@@ -58,6 +58,11 @@ namespace Reversi
             return false;
         }
 
+        public SquareInfo GetSquareInfo()
+        {
+            return squareInfo;
+        }
+
         public ReversiStone GetStone()
         {
             return reversiStone;

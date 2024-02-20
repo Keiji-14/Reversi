@@ -11,6 +11,9 @@ namespace Reversi
         #region PrivateField
         /// <summary>盤面のマス/// </summary>
         private const int boardSize = 8;
+        /// <summary>手番の判定に使用/// </summary>
+        private StoneType stoneTypeTurns;
+
         private BoardSquare[,] boardSquares;
         #endregion
 
@@ -27,6 +30,9 @@ namespace Reversi
         /// </summary>
         public void Init()
         {
+            // 先行を黒の石にする
+            stoneTypeTurns = StoneType.Black;
+
             CreateBoard();
 
             SetupInitialStones();
@@ -68,7 +74,7 @@ namespace Reversi
 
             squareObj.setStoneObservable.Subscribe(squareInfo =>
             {
-                PlaceStone(reversiStone, StoneType.Black, squareInfo.row, squareInfo.col);
+                PlaceStone(reversiStone, stoneTypeTurns, squareInfo.row, squareInfo.col);
             }).AddTo(this);
 
             boardSquares[row, col] = squareObj;
@@ -93,13 +99,16 @@ namespace Reversi
 
         private void PlaceStone(ReversiStone stoneObj, StoneType stoneType, int row, int col)
         {
-            if (IsValidMove(row, col, stoneType)) // 石を置く位置が有効かどうか判定
+            if (IsValidMove(row, col, stoneType)) 
             {
                 ReversiStone stone = Instantiate(stoneObj, stoneGroup);
                 boardSquares[row, col].SetStone(stone, stoneType); // 石を配置
 
                 // 反転処理
                 FlipStones(row, col, stoneType);
+
+                // 手番を交代する
+                GetOpponentType(stoneTypeTurns);
             }
         }
 
@@ -117,7 +126,9 @@ namespace Reversi
             {
                 for (int dc = -1; dc <= 1; dc++)
                 {
-                    if (dr == 0 && dc == 0) continue; // 自分自身の方向はスキップ
+                    // 自分自身の方向はスキップ
+                    if (dr == 0 && dc == 0)
+                        continue;
 
                     int r = row + dr;
                     int c = col + dc;
@@ -148,7 +159,9 @@ namespace Reversi
             {
                 for (int dc = -1; dc <= 1; dc++)
                 {
-                    if (dr == 0 && dc == 0) continue; // 自分自身の方向はスキップ
+                    // 自分自身の方向はスキップ
+                    if (dr == 0 && dc == 0)
+                        continue;
 
                     int r = row + dr;
                     int c = col + dc;
@@ -179,7 +192,7 @@ namespace Reversi
                 }
             }
         }
-
+        
         private bool IsInsideBoard(int row, int col)
         {
             return row >= 0 && row < boardSize && col >= 0 && col < boardSize;
