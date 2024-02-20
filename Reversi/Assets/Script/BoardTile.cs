@@ -8,17 +8,17 @@ namespace Reversi
     /// <summary>
     /// オセロゲームの盤面のマス
     /// </summary>
-    public class BoardSquare : MonoBehaviour
+    public class BoardTile : MonoBehaviour
     {
         #region PublicField
         /// <summary>マスを選択した時の処理 </summary>
-        public IObservable<SquareInfo> setStoneObservable => 
-            boardSquareBtn.OnClickAsObservable().Select(_ => squareInfo);
+        public IObservable<TileInfo> setStoneObservable => 
+            boardTileBtn.OnClickAsObservable().Select(_ => tileInfo);
         #endregion
 
         #region PrivateField
         /// <summary>盤面マスの座標情報 </summary>
-        private SquareInfo squareInfo;
+        private TileInfo tileInfo;
         /// <summary>オセロの石</summary>
         private ReversiStone reversiStone;
         /// <summary>マスに置かれている石のタイプ </summary>
@@ -29,7 +29,7 @@ namespace Reversi
         /// <summary>ハイライト表示に使用するオブジェクト </summary>
         [SerializeField] private GameObject highlightObj;
         /// <summary>マスを押すボタン </summary>
-        [SerializeField] private Button boardSquareBtn;
+        [SerializeField] private Button boardTileBtn;
         #endregion
 
         #region PublicMethod
@@ -38,7 +38,7 @@ namespace Reversi
         /// </summary>
         public void Init(int row, int col)
         {
-            squareInfo = new SquareInfo(row, col);
+            tileInfo = new TileInfo(row, col);
             stoneType = StoneType.UnSetStone;
         }
 
@@ -68,7 +68,7 @@ namespace Reversi
         /// <summary>
         /// 盤面のマスをハイライトするかどうか
         /// </summary>
-        public void HighlightSquare(bool isValidMove)
+        public void HighlightTile(bool isValidMove)
         {
             highlightObj.SetActive(isValidMove);
         }
@@ -84,9 +84,9 @@ namespace Reversi
         /// <summary>
         /// 盤面マスの座標情報を返す
         /// </summary>
-        public SquareInfo GetSquareInfo()
+        public TileInfo GetTileInfo()
         {
-            return squareInfo;
+            return tileInfo;
         }
 
         /// <summary>
@@ -110,12 +110,12 @@ namespace Reversi
     /// <summary>
     /// 盤面のマスの座標
     /// </summary>
-    public class SquareInfo
+    public class TileInfo
     {
         public int row;
         public int col;
 
-        public SquareInfo(int row, int col)
+        public TileInfo(int row, int col)
         {
             this.row = row;
             this.col = col;

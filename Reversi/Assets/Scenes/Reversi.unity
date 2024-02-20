@@ -628,9 +628,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2a3c0c6566431b43ab975fa8a30b36a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  squareGroup: {fileID: 1970081109}
+  tileGroup: {fileID: 1970081109}
   stoneGroup: {fileID: 1943051403}
-  boardSquare: {fileID: 6803819009858712050, guid: 6589817862472994495df08203a2788f, type: 3}
+  boardTile: {fileID: 6803819009858712050, guid: 6589817862472994495df08203a2788f, type: 3}
   reversiStone: {fileID: 6413773078977865508, guid: 62ed0cf8466a0d54aa53f7c68b8ab5b6, type: 3}
 --- !u!224 &1970081109
 RectTransform:

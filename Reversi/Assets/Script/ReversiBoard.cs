@@ -9,18 +9,22 @@ namespace Reversi
     public class ReversiBoard : MonoBehaviour
     {
         #region PrivateField
-        /// <summary>盤面のマス/// </summary>
+        /// <summary>盤面一列のマス数</summary>
         private const int boardSize = 8;
-        /// <summary>手番の判定に使用/// </summary>
+        /// <summary>マスのサイズ</summary>
+        private const float tileSize = 115f;
+        /// <summary>マスとマスの幅間隔</summary>
+        private const float spacing = 5f;
+        /// <summary>手番の判定に使用</summary>
         private StoneType stoneTypeTurns;
 
-        private BoardSquare[,] boardSquares;
+        private BoardTile[,] boardTiles;
         #endregion
 
         #region SerializeField
-        [SerializeField] private Transform squareGroup;
+        [SerializeField] private Transform tileGroup;
         [SerializeField] private Transform stoneGroup;
-        [SerializeField] private BoardSquare boardSquare;
+        [SerializeField] private BoardTile boardTile;
         [SerializeField] private ReversiStone reversiStone;
         #endregion
 
@@ -45,13 +49,13 @@ namespace Reversi
         /// </summary>
         private void CreateBoard()
         {
-            boardSquares = new BoardSquare[boardSize, boardSize];
+            boardTiles = new BoardTile[boardSize, boardSize];
 
             for (int row = 0; row < boardSize; row++)
             {
                 for (int col = 0; col < boardSize; col++)
                 {
-                    CreateSquare(row, col);
+                    CreateTile(row, col);
                 }
             }
         }
@@ -59,25 +63,22 @@ namespace Reversi
         /// <summary>
         /// 盤面のマスを生成する処理
         /// </summary>
-        private void CreateSquare(int row, int col)
+        private void CreateTile(int row, int col)
         {
-            float tileSize = 115f; // マスのサイズ
-            float spacing = 5f;   // 幅間隔
-
             float xPos = col * (tileSize + spacing);
             float yPos = -row * (tileSize + spacing);
 
-            var squareObj = Instantiate(boardSquare, squareGroup);
-            squareObj.transform.localPosition = new Vector2(xPos, yPos);
+            var tileObj = Instantiate(boardTile, tileGroup);
+            tileObj.transform.localPosition = new Vector2(xPos, yPos);
             
-            squareObj.Init(row, col);
+            tileObj.Init(row, col);
 
-            squareObj.setStoneObservable.Subscribe(squareInfo =>
+            tileObj.setStoneObservable.Subscribe(tileInfo =>
             {
-                PlaceStone(reversiStone, squareInfo.row, squareInfo.col);
+                PlaceStone(reversiStone, tileInfo.row, tileInfo.col);
             }).AddTo(this);
 
-            boardSquares[row, col] = squareObj;
+            boardTiles[row, col] = tileObj;
         }
 
         /// <summary>
@@ -97,7 +98,7 @@ namespace Reversi
         private void PlaceInitStone(ReversiStone stoneObj, StoneType stoneType, int row, int col)
         {
             ReversiStone stone = Instantiate(stoneObj, stoneGroup);
-            boardSquares[row, col].SetStone(stone, stoneType);
+            boardTiles[row, col].SetStone(stone, stoneType);
 
             HighlightPlaceStone();
         }
@@ -107,12 +108,12 @@ namespace Reversi
         /// </summary>
         private void HighlightPlaceStone()
         {
-            foreach (var boardSquare in boardSquares)
+            foreach (var boardTile in boardTiles)
             {
-                var row = boardSquare.GetSquareInfo().row;
-                var col = boardSquare.GetSquareInfo().col;
+                var row = boardTile.GetTileInfo().row;
+                var col = boardTile.GetTileInfo().col;
 
-                boardSquare.HighlightSquare(IsValidMove(row, col, stoneTypeTurns));
+                boardTile.HighlightTile(IsValidMove(row, col, stoneTypeTurns));
             }
         }
 
@@ -124,7 +125,7 @@ namespace Reversi
             if (IsValidMove(row, col, stoneTypeTurns)) 
             {
                 ReversiStone stone = Instantiate(stoneObj, stoneGroup);
-                boardSquares[row, col].SetStone(stone, stoneTypeTurns);
+                boardTiles[row, col].SetStone(stone, stoneTypeTurns);
 
                 // 反転処理
                 FlipStones(row, col, stoneTypeTurns);
@@ -143,7 +144,7 @@ namespace Reversi
         public bool IsValidMove(int row, int col, StoneType stoneType)
         {
             // 既に石が置かれているかどうかの判定
-            if (boardSquares[row, col].SettedStone())
+            if (boardTiles[row, col].SettedStone())
             {
                 return false;
             }
@@ -163,14 +164,14 @@ namespace Reversi
                     bool canFlip = false;
 
                     // 反転できる相手の石があれば置ける
-                    while (IsInsideBoard(r, c) && boardSquares[r, c].SettedStone() && boardSquares[r, c].GetStoneType() != stoneType)
+                    while (IsInsideBoard(r, c) && boardTiles[r, c].SettedStone() && boardTiles[r, c].GetStoneType() != stoneType)
                     {
                         canFlip = true;
                         r += dr;
                         c += dc;
                     }
 
-                    if (canFlip && IsInsideBoard(r, c) && boardSquares[r, c].GetStoneType() == stoneType)
+                    if (canFlip && IsInsideBoard(r, c) && boardTiles[r, c].GetStoneType() == stoneType)
                     {
                         return true;
                     }
@@ -199,7 +200,7 @@ namespace Reversi
                     bool canFlip = false;
 
                     // 反転できる相手の石があるかどうかを確認
-                    while (IsInsideBoard(r, c) && boardSquares[r, c].SettedStone() && boardSquares[r, c].GetStoneType() == GetOpponentType(stoneType))
+                    while (IsInsideBoard(r, c) && boardTiles[r, c].SettedStone() && boardTiles[r, c].GetStoneType() == GetOpponentType(stoneType))
                     {
                         canFlip = true;
                         r += dr;
@@ -207,16 +208,16 @@ namespace Reversi
                     }
 
                     // 反転処理
-                    if (canFlip && IsInsideBoard(r, c) && boardSquares[r, c].SettedStone() && boardSquares[r, c].GetStoneType() == stoneType)
+                    if (canFlip && IsInsideBoard(r, c) && boardTiles[r, c].SettedStone() && boardTiles[r, c].GetStoneType() == stoneType)
                     {
                         r = row + dr;
                         c = col + dc;
 
-                        while (IsInsideBoard(r, c) && boardSquares[r, c].SettedStone() && boardSquares[r, c].GetStoneType() == GetOpponentType(stoneType))
+                        while (IsInsideBoard(r, c) && boardTiles[r, c].SettedStone() && boardTiles[r, c].GetStoneType() == GetOpponentType(stoneType))
                         {
                             // 石を反転する
-                            boardSquares[r, c].GetStone().Flip();
-                            boardSquares[r, c].FlipStone();
+                            boardTiles[r, c].GetStone().Flip();
+                            boardTiles[r, c].FlipStone();
                             r += dr;
                             c += dc;
                         }
