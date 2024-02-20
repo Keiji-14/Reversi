@@ -81,3 +81,5 @@ Reversi/ProjectSettings/VFXManager.asset
 Reversi/ProjectSettings/XRSettings.asset
 Reversi/UserSettings/EditorUserSettings.asset
 Reversi/.vsconfig
+Reversi/obj/Debug/UniRx.csproj.AssemblyReference.cache
+Reversi/obj/Debug/UniRx.Examples.csproj.AssemblyReference.cache
