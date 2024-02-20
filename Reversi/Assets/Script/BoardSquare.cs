@@ -17,14 +17,18 @@ namespace Reversi
         #endregion
 
         #region PrivateField
+        /// <summary>盤面マスの座標情報/// </summary>
         private SquareInfo squareInfo;
-
+        /// <summary>オセロの石/// </summary>
         private ReversiStone reversiStone;
         /// <summary>マスに置かれている石のタイプ/// </summary>
         private StoneType stoneType;
         #endregion
 
         #region SerializeField
+        /// <summary>ハイライト表示に使用するオブジェクト/// </summary>
+        [SerializeField] private GameObject highlightObj;
+        /// <summary>マスを押すボタン/// </summary>
         [SerializeField] private Button boardSquareBtn;
         #endregion
 
@@ -37,6 +41,9 @@ namespace Reversi
             squareInfo = new SquareInfo(row, col);
         }
 
+        /// <summary>
+        /// 石を盤面に設定する処理
+        /// </summary>
         public void SetStone(ReversiStone stone, StoneType stoneType)
         {
             stone.transform.localPosition = transform.localPosition;
@@ -49,6 +56,17 @@ namespace Reversi
             stone.Init(stoneType);
         }
 
+        /// <summary>
+        /// 盤面のマスをハイライトするかどうか
+        /// </summary>
+        public void HighlightSquare(bool isValidMove)
+        {
+            highlightObj.SetActive(isValidMove);
+        }
+
+        /// <summary>
+        /// 既に石が置かれているかどうかの判定
+        /// </summary>
         public bool SettedStone()
         {
             if (reversiStone != null)

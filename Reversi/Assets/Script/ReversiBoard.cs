@@ -91,12 +91,36 @@ namespace Reversi
             PlaceInitStone(reversiStone, StoneType.White, 4, 3);
         }
 
+        /// <summary>
+        /// 盤面の石を初期配置する
+        /// </summary>
         private void PlaceInitStone(ReversiStone stoneObj, StoneType stoneType, int row, int col)
         {
             ReversiStone stone = Instantiate(stoneObj, stoneGroup);
             boardSquares[row, col].SetStone(stone, stoneType);
+
+            HighlightPlaceStone();
         }
 
+        /// <summary>
+        /// 石の置ける場所をハイライトする
+        /// </summary>
+        private void HighlightPlaceStone()
+        {
+            foreach (var boardSquare in boardSquares)
+            {
+                var row = boardSquare.GetSquareInfo().row;
+                var col = boardSquare.GetSquareInfo().col;
+
+                var type = boardSquare.GetStoneType();
+
+                boardSquare.HighlightSquare(IsValidMove(row, col, type));
+            }
+        }
+
+        /// <summary>
+        /// 盤面の石を配置する処理
+        /// </summary
         private void PlaceStone(ReversiStone stoneObj, StoneType stoneType, int row, int col)
         {
             if (IsValidMove(row, col, stoneType)) 
@@ -109,13 +133,15 @@ namespace Reversi
 
                 // 手番を交代する
                 GetOpponentType(stoneTypeTurns);
+
+                // ハイライト表示を更新する
+                HighlightPlaceStone();
             }
         }
 
         // 指定された位置に石を置けるかどうかを判定するメソッド
         public bool IsValidMove(int row, int col, StoneType stoneType)
         {
-            // すでに石が置かれているかどうかの判定
             if (boardSquares[row, col].SettedStone())
             {
                 return false;

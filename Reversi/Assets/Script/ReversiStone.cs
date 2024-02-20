@@ -23,6 +23,9 @@ namespace Reversi
             stoneImg.sprite = stoneType == StoneType.Black ? blackSprite : whiteSprite;
         }
 
+        /// <summary>
+        /// スプライトを切り替える処理
+        /// </summary>
         public void Flip()
         {
             stoneImg.sprite = stoneImg.sprite == blackSprite ? whiteSprite : blackSprite;
