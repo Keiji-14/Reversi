@@ -1,45 +1,51 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 namespace Reversi
 {
     /// <summary>
-    /// ƒIƒZƒƒQ[ƒ€‚ÌUI
+    /// ã‚ªã‚»ãƒ­ã‚²ãƒ¼ãƒ ã®UI
     /// </summary>
     public class ReversiUI : MonoBehaviour
     {
         #region SerializeField
         [SerializeField] private Sprite blackSprite;
         [SerializeField] private Sprite whiteSprite;
-        /// <summary>ƒvƒŒƒCƒ„[‘¤‚ÌƒIƒZƒÎ‚Ì‰æ‘œ</summary>
+        /// <summary>ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å´ã®ã‚ªã‚»ãƒ­çŸ³ã®ç”»åƒ</summary>
         [SerializeField] private Image playerStoneImg;
-        /// <summary>‘Šè‘¤‚ÌƒIƒZƒÎ‚Ì‰æ‘œ</summary>
+        /// <summary>ç›¸æ‰‹å´ã®ã‚ªã‚»ãƒ­çŸ³ã®ç”»åƒ</summary>
         [SerializeField] private Image opponentStoneImg;
-        /// <summary>ƒvƒŒƒCƒ„[‘¤‚ÌƒIƒZƒÎ‚Ì”‚ÌƒeƒLƒXƒg</summary>
+        /// <summary>ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å´ã®ã‚ªã‚»ãƒ­çŸ³ã®æ•°ã®ãƒ†ã‚­ã‚¹ãƒˆ</summary>
         [SerializeField] private TextMeshProUGUI playerStoneNumText;
-        /// <summary>‘Šè‘¤‚ÌƒIƒZƒÎ‚Ì”‚ÌƒeƒLƒXƒg</summary>
+        /// <summary>ç›¸æ‰‹å´ã®ã‚ªã‚»ãƒ­çŸ³ã®æ•°ã®ãƒ†ã‚­ã‚¹ãƒˆ</summary>
         [SerializeField] private TextMeshProUGUI opponentStoneNumText;
         #endregion
 
         #region PublicMethod
         /// <summary>
-        /// ‰Šú‰»
+        /// åˆæœŸåŒ–
         /// </summary>
         public void Init()
         {
-            // Î‚Ì”‚ğ‰Šú‰»‚·‚é
+            // çŸ³ã®æ•°ã‚’åˆæœŸåŒ–ã™ã‚‹
             playerStoneNumText.text = "0";
             opponentStoneNumText.text = "0";
         }
 
+        /// <summary>
+        /// çŸ³ã®æ•°ã‚’è¡¨ç¤ºã™ã‚‹
+        /// </summary>
         public void ViewStoneNum(int playerStoneNum, int opponentStoneNum)
         {
-            // Î‚Ì”‚ğ‰Šú‰»‚·‚é
+            // çŸ³ã®æ•°ã‚’åˆæœŸåŒ–ã™ã‚‹
             playerStoneNumText.text = playerStoneNum.ToString();
             opponentStoneNumText.text = opponentStoneNum.ToString();
         }
 
+        /// <summary>
+        /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ç›¸æ‰‹ã®çŸ³ã®è‰²ã‚’è¡¨ç¤ºã™ã‚‹
+        /// </summary>
         public void ViewStoneImage(StoneType type)
         {
             playerStoneImg.sprite = type == StoneType.Black ? blackSprite : whiteSprite;

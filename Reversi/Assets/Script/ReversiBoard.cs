@@ -45,8 +45,6 @@ namespace Reversi
             CreateBoard();
 
             SetupInitialStones();
-
-            StoneCount();
         }
         #endregion
 
@@ -303,6 +301,7 @@ namespace Reversi
             }
 
             var stoneNumInfo = new StoneNumInfo(blackCountNum, whiteCountNum);
+
             // それぞれの石の数情報を送る
             StoneCountSubject.OnNext(stoneNumInfo);
         }

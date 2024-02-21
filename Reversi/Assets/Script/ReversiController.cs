@@ -46,16 +46,19 @@ namespace Reversi
 
             reversiUIInit();
 
-            reversiBoard.Init();
-
             reversiBoard.StoneCountSubject.Subscribe(stoneNumInfo =>
             {
                 SetStoneNum(stoneNumInfo);
             }).AddTo(this);
+
+            reversiBoard.Init();
         }
         #endregion
 
         #region PrivateMethod
+        /// <summary>
+        /// UI表示の初期化
+        /// </summary>
         private void reversiUIInit()
         {
             reversiUI.Init();
