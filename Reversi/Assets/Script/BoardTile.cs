@@ -12,7 +12,7 @@ namespace Reversi
     {
         #region PublicField
         /// <summary>マスを選択した時の処理 </summary>
-        public IObservable<TileInfo> setStoneObservable => 
+        public IObservable<TileInfo> SetStoneObservable => 
             boardTileBtn.OnClickAsObservable().Select(_ => tileInfo);
         #endregion
 

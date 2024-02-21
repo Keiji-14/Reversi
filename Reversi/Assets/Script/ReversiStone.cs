@@ -11,6 +11,7 @@ namespace Reversi
         #region SerializeField
         [SerializeField] private Sprite blackSprite;
         [SerializeField] private Sprite whiteSprite;
+        /// <summary>オセロ石の画像</summary>
         [SerializeField] private Image stoneImg;
         #endregion
 

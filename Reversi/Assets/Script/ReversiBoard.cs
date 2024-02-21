@@ -8,6 +8,11 @@ namespace Reversi
     /// </summary>
     public class ReversiBoard : MonoBehaviour
     {
+        #region PublicField
+        /// <summary>盤面上の石の数をカウントする処理 </summary>
+        public Subject<StoneNumInfo> StoneCountSubject = new Subject<StoneNumInfo>();
+        #endregion
+
         #region PrivateField
         /// <summary>盤面一列のマス数</summary>
         private const int boardSize = 8;
@@ -24,8 +29,8 @@ namespace Reversi
         #region SerializeField
         [SerializeField] private Transform tileGroup;
         [SerializeField] private Transform stoneGroup;
-        [SerializeField] private BoardTile boardTile;
-        [SerializeField] private ReversiStone reversiStone;
+        [SerializeField] private BoardTile boardTileObj;
+        [SerializeField] private ReversiStone reversiStoneObj;
         #endregion
 
         #region PublicMethod
@@ -40,6 +45,8 @@ namespace Reversi
             CreateBoard();
 
             SetupInitialStones();
+
+            StoneCount();
         }
         #endregion
 
@@ -68,14 +75,14 @@ namespace Reversi
             float xPos = col * (tileSize + spacing);
             float yPos = -row * (tileSize + spacing);
 
-            var tileObj = Instantiate(boardTile, tileGroup);
+            var tileObj = Instantiate(boardTileObj, tileGroup);
             tileObj.transform.localPosition = new Vector2(xPos, yPos);
             
             tileObj.Init(row, col);
 
-            tileObj.setStoneObservable.Subscribe(tileInfo =>
+            tileObj.SetStoneObservable.Subscribe(tileInfo =>
             {
-                PlaceStone(reversiStone, tileInfo.row, tileInfo.col);
+                PlaceStone(reversiStoneObj, tileInfo.row, tileInfo.col);
             }).AddTo(this);
 
             boardTiles[row, col] = tileObj;
@@ -86,10 +93,14 @@ namespace Reversi
         /// </summary>
         private void SetupInitialStones()
         {
-            PlaceInitStone(reversiStone, StoneType.Black, 3, 3);
-            PlaceInitStone(reversiStone, StoneType.Black, 4, 4);
-            PlaceInitStone(reversiStone, StoneType.White, 3, 4);
-            PlaceInitStone(reversiStone, StoneType.White, 4, 3);
+            PlaceInitStone(reversiStoneObj, StoneType.Black, 3, 3);
+            PlaceInitStone(reversiStoneObj, StoneType.Black, 4, 4);
+            PlaceInitStone(reversiStoneObj, StoneType.White, 3, 4);
+            PlaceInitStone(reversiStoneObj, StoneType.White, 4, 3);
+
+            HighlightPlaceStone();
+
+            StoneCount();
         }
 
         /// <summary>
@@ -99,8 +110,6 @@ namespace Reversi
         {
             ReversiStone stone = Instantiate(stoneObj, stoneGroup);
             boardTiles[row, col].SetStone(stone, stoneType);
-
-            HighlightPlaceStone();
         }
 
         /// <summary>
@@ -135,6 +144,16 @@ namespace Reversi
 
                 // ハイライト表示を更新する
                 HighlightPlaceStone();
+
+                // 石のカウントを更新する
+                StoneCount();
+
+                // 終了判定
+                if (IsBoardFull())
+                {
+                    Debug.Log("Game Over!");
+                    // Todo: ゲーム終了時の処理を追加する
+                }
             }
         }
 
@@ -149,7 +168,7 @@ namespace Reversi
                 return false;
             }
 
-            // 反転できる相手の石があるかどうかの判定
+            // 全方向のマスを確認する
             for (int dr = -1; dr <= 1; dr++)
             {
                 for (int dc = -1; dc <= 1; dc++)
@@ -186,6 +205,7 @@ namespace Reversi
         /// </summary>
         private void FlipStones(int row, int col, StoneType stoneType)
         {
+            // 全方向のマスを確認する
             for (int dr = -1; dr <= 1; dr++)
             {
                 for (int dc = -1; dc <= 1; dc++)
@@ -241,6 +261,66 @@ namespace Reversi
         {
             return stoneType == StoneType.Black ? StoneType.White : StoneType.Black;
         }
+
+        /// <summary>
+        /// 盤面がすべて埋まったかどうかの判定
+        /// </summary>
+        private bool IsBoardFull()
+        {
+            foreach (var boardTile in boardTiles)
+            {
+                // 空いているマスがある場合はfalseを返す
+                if (!boardTile.SettedStone())
+                {
+                    return false; 
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 石の数を数える処理
+        /// </summary>
+        private void StoneCount()
+        {
+            var blackCountNum = 0;
+            var whiteCountNum = 0;
+
+            foreach (var boardTile in boardTiles)
+            {
+                switch (boardTile.GetStoneType())
+                {
+                    case StoneType.Black:
+                        blackCountNum++;
+                        break;
+                    case StoneType.White:
+                        whiteCountNum++;
+                        break;
+                    case StoneType.UnSetStone:
+                        break;
+                }
+            }
+
+            var stoneNumInfo = new StoneNumInfo(blackCountNum, whiteCountNum);
+            // それぞれの石の数情報を送る
+            StoneCountSubject.OnNext(stoneNumInfo);
+        }
         #endregion
+    }
+
+    /// <summary>
+    /// 配置している石の数情報
+    /// </summary>
+    public class StoneNumInfo
+    {
+        public int blackStoneNum;
+        public int whiteStoneNum;
+
+        public StoneNumInfo(int blackStoneNum, int whiteStoneNum)
+        {
+            this.blackStoneNum = blackStoneNum;
+            this.whiteStoneNum = whiteStoneNum;
+        }
     }
 }
