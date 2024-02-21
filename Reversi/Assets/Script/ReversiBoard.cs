@@ -9,6 +9,8 @@ namespace Reversi
     public class ReversiBoard : MonoBehaviour
     {
         #region PublicField
+        /// <summary>ゲーム終了時の処理 </summary>
+        public Subject<Unit> GameFinishedSubject = new Subject<Unit>();
         /// <summary>盤面上の石の数をカウントする処理 </summary>
         public Subject<StoneNumInfo> StoneCountSubject = new Subject<StoneNumInfo>();
         #endregion
@@ -120,7 +122,7 @@ namespace Reversi
                 var row = boardTile.GetTileInfo().row;
                 var col = boardTile.GetTileInfo().col;
 
-                boardTile.HighlightTile(IsValidMove(row, col, stoneTypeTurns));
+                boardTile.HighlightTile(IsValidSet(row, col, stoneTypeTurns));
             }
         }
 
@@ -129,7 +131,7 @@ namespace Reversi
         /// </summary
         private void PlaceStone(ReversiStone stoneObj, int row, int col)
         {
-            if (IsValidMove(row, col, stoneTypeTurns)) 
+            if (IsValidSet(row, col, stoneTypeTurns)) 
             {
                 ReversiStone stone = Instantiate(stoneObj, stoneGroup);
                 boardTiles[row, col].SetStone(stone, stoneTypeTurns);
@@ -137,20 +139,22 @@ namespace Reversi
                 // 反転処理
                 FlipStones(row, col, stoneTypeTurns);
 
-                // 手番を交代する
-                stoneTypeTurns = GetOpponentType(stoneTypeTurns);
-
-                // ハイライト表示を更新する
-                HighlightPlaceStone();
+                // 手番交代
+                TurnShift();
 
                 // 石のカウントを更新する
                 StoneCount();
 
-                // 終了判定
-                if (IsBoardFull())
+                // 置ける場所が無い場合、手番交代する
+                if (!IsPlaceStone(stoneTypeTurns))
                 {
-                    Debug.Log("Game Over!");
-                    // Todo: ゲーム終了時の処理を追加する
+                    TurnShift();
+                }
+
+                // 終了判定
+                if (IsGameFinished())
+                {
+                    GameFinishedSubject.OnNext(Unit.Default);
                 }
             }
         }
@@ -158,7 +162,7 @@ namespace Reversi
         /// <summary>
         /// 指定された位置に石を置けるかどうかを判定する
         /// </summary>
-        public bool IsValidMove(int row, int col, StoneType stoneType)
+        public bool IsValidSet(int row, int col, StoneType stoneType)
         {
             // 既に石が置かれているかどうかの判定
             if (boardTiles[row, col].SettedStone())
@@ -261,7 +265,43 @@ namespace Reversi
         }
 
         /// <summary>
-        /// 盤面がすべて埋まったかどうかの判定
+        /// ゲームの終了判定
+        /// </summary>
+        private bool IsGameFinished()
+        {
+            // 盤面がすべて埋まったかどうか
+            bool isBoardFull = IsBoardFull();
+
+            // どちらも置ける場所がないかどうか
+            bool noValidMovesForBlack = !IsPlaceStone(StoneType.Black);
+            bool noValidMovesForWhite = !IsPlaceStone(StoneType.White);
+
+            // いずれかの条件が満たされたらゲーム終了
+            return isBoardFull || (noValidMovesForBlack && noValidMovesForWhite);
+        }
+
+        /// <summary>
+        /// 盤面に置ける場所があるかどうかの判定
+        /// </summary>
+        private bool IsPlaceStone(StoneType stoneType)
+        {
+            foreach (var boardTile in boardTiles)
+            {
+                var row = boardTile.GetTileInfo().row;
+                var col = boardTile.GetTileInfo().col;
+
+                // 置ける場所がある場合はtureを返す
+                if (IsValidSet(row, col, stoneType))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 盤面がすべて埋まったかどうかを判定
         /// </summary>
         private bool IsBoardFull()
         {
@@ -275,6 +315,18 @@ namespace Reversi
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 手番を交代させる処理
+        /// </summary>
+        private void TurnShift()
+        {
+            // 手番を交代する
+            stoneTypeTurns = GetOpponentType(stoneTypeTurns);
+
+            // ハイライト表示を更新する
+            HighlightPlaceStone();
         }
 
         /// <summary>

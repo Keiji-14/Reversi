@@ -46,6 +46,11 @@ namespace Reversi
 
             reversiUIInit();
 
+            reversiBoard.GameFinishedSubject.Subscribe(_ =>
+            {
+                Outcome();
+            }).AddTo(this);
+
             reversiBoard.StoneCountSubject.Subscribe(stoneNumInfo =>
             {
                 SetStoneNum(stoneNumInfo);
@@ -79,6 +84,25 @@ namespace Reversi
             reversiUI.ViewStoneNum(playerStoneNum, opponentStoneNum);
         }
 
+        /// <summary>
+        /// 勝敗を確認する
+        /// </summary>
+        private void Outcome()
+        {
+            if (playerStoneNum > opponentStoneNum)
+            {
+                Debug.Log("Player Win");
+            }
+            else if (playerStoneNum == opponentStoneNum)
+            {
+                Debug.Log("Drow");
+            }
+            else
+            {
+                Debug.Log("Player Lose");
+            }
+        }
+        
         /// <summary>
         /// 先攻後攻の結果を返す
         /// </summary>
