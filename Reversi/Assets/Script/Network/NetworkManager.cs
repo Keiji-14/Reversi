@@ -10,6 +10,11 @@ namespace NetWork
         public static NetworkManager instance = null;
         #endregion
 
+        #region SerializeField
+        /// <summary>オンライン対戦のマッチング管理</summary>
+        [SerializeField] private MatchingController matchingController;
+        #endregion
+
         #region UnityEvent
         private void Awake()
         {
@@ -32,30 +37,21 @@ namespace NetWork
             PhotonNetwork.ConnectUsingSettings();
         }
 
-        // マスターサーバーへの接続が成功した時に呼ばれるコールバック
+        /// <summary>
+        /// マスターサーバーへの接続が成功した時に呼ばれるコールバック
+        /// </summary>
         public override void OnConnectedToMaster()
         {
             // "Room"という名前のルームに参加する（ルームが存在しなければ作成して参加する）
             PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions(), TypedLobby.Default);
         }
 
-        // ゲームサーバーへの接続が成功した時に呼ばれるコールバック
+        /// <summary>
+        /// ゲームサーバーへの接続が成功した時に呼ばれるコールバック
+        /// </summary>
         public override void OnJoinedRoom()
         {
-            // ルームに入った時の処理
-            Debug.Log("Joined Room");
-
-            // ルーム内のプレイヤー数を確認
-            if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-            {
-                // 他のプレイヤーを待つか、新しいプレイヤーが参加するまで待機
-                Debug.Log("Waiting for another player...");
-            }
-            else
-            {
-                // 他のプレイヤーがいる場合、ゲームを開始
-                StartGame();
-            }
+            matchingController.MatchingStart();
         }
         #endregion
 
@@ -63,7 +59,17 @@ namespace NetWork
         private void StartGame()
         {
             // ゲームを開始するための処理を実装
-            Debug.Log("Starting the game!");
+            SetPlayerIDs();
+        }
+
+        private void SetPlayerIDs()
+        {
+            Player[] players = PhotonNetwork.PlayerList;
+
+            for (int i = 0; i < players.Length; i++)
+            {
+                players[i].CustomProperties["PlayerID"] = i + 1;
+            }
         }
         #endregion
     }
