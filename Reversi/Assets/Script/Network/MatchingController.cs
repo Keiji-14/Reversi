@@ -46,21 +46,10 @@ namespace NetWork
         public void MatchingStart()
         {
             isMatching = true;
-
-            StartCoroutine(CheckPlayerCount());
         }
         #endregion
 
         #region PrivateMethod
-        private IEnumerator CheckPlayerCount()
-        {
-            while (true)
-            {
-                Debug.Log($"Player Count: {PhotonNetwork.CurrentRoom.PlayerCount}");
-                yield return new WaitForSeconds(3f); // 3秒ごとにプレイヤー数を確認
-            }
-        }
-
         private void StartGame()
         {
             // ゲームを開始するための処理を実装
@@ -69,15 +58,7 @@ namespace NetWork
 
         private void SetPlayerIDs()
         {
-            Player[] players = PhotonNetwork.PlayerList;
-
-            for (int i = 0; i < players.Length; i++)
-            {
-                int playerID = i + 1;
-                players[i].CustomProperties["PlayerID"] = i + 1;
-
-                Debug.Log($"Player {players[i].NickName} has ID: {playerID}");
-            }
+            //Debug.Log($"Local Player Number: {PhotonNetwork.LocalPlayer.ActorNumber}");
         }
         #endregion
     }
