@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using UnityEngine;
 
@@ -32,7 +33,8 @@ namespace NetWork
             else
             {
                 isGameStarted = true;
-                Debug.Log("Matching");
+
+                StartGame();
             }
         }
         #endregion
@@ -44,19 +46,19 @@ namespace NetWork
         public void MatchingStart()
         {
             isMatching = true;
-
-            StartCoroutine(CheckPlayerCount());
         }
         #endregion
 
         #region PrivateMethod
-        private IEnumerator CheckPlayerCount()
+        private void StartGame()
         {
-            while (true)
-            {
-                Debug.Log($"Player Count: {PhotonNetwork.CurrentRoom.PlayerCount}");
-                yield return new WaitForSeconds(3f); // 3秒ごとにプレイヤー数を確認
-            }
+            // ゲームを開始するための処理を実装
+            SetPlayerIDs();
+        }
+
+        private void SetPlayerIDs()
+        {
+            //Debug.Log($"Local Player Number: {PhotonNetwork.LocalPlayer.ActorNumber}");
         }
         #endregion
     }

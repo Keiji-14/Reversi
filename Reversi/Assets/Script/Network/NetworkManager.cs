@@ -54,23 +54,5 @@ namespace NetWork
             matchingController.MatchingStart();
         }
         #endregion
-
-        #region PrivateMethod
-        private void StartGame()
-        {
-            // ゲームを開始するための処理を実装
-            SetPlayerIDs();
-        }
-
-        private void SetPlayerIDs()
-        {
-            Player[] players = PhotonNetwork.PlayerList;
-
-            for (int i = 0; i < players.Length; i++)
-            {
-                players[i].CustomProperties["PlayerID"] = i + 1;
-            }
-        }
-        #endregion
     }
 }
