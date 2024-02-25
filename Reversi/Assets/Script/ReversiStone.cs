@@ -3,6 +3,17 @@ using UnityEngine.UI;
 
 namespace Reversi
 {
+
+    /// <summary>
+    /// 石の種類
+    /// </summary>
+    public enum StoneType
+    {
+        Black,
+        White,
+        UnSetStone,
+    }
+
     /// <summary>
     /// オセロの石
     /// </summary>

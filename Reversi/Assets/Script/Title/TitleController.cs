@@ -1,10 +1,14 @@
-﻿using System;
+﻿using Reversi;
+using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Title
 {
+    /// <summary>
+    /// タイトル画面の処理管理
+    /// </summary>
     public class TitleController : MonoBehaviour
     {
         #region PrivateField

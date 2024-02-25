@@ -4,13 +4,12 @@ using UnityEngine;
 namespace Reversi
 {
     /// <summary>
-    /// 石の種類
+    /// ゲームモードの種類
     /// </summary>
-    public enum StoneType
+    public enum GameMode
     {
-        Black,
-        White,
-        UnSetStone,
+        CPU,
+        Online,
     }
 
     /// <summary>

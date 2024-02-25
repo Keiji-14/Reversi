@@ -34,7 +34,7 @@ namespace NetWork
             {
                 isGameStarted = true;
 
-                StartGame();
+                
             }
         }
         #endregion
@@ -50,15 +50,20 @@ namespace NetWork
         #endregion
 
         #region PrivateMethod
-        private void StartGame()
+        private IEnumerator MovePlayersBattleRoom()
         {
-            // ゲームを開始するための処理を実装
-            SetPlayerIDs();
-        }
+            // 対戦用の新しいルーム名を動的に生成
+            string battleRoomName = "BattleRoom" + Random.Range(1, 1000);
 
-        private void SetPlayerIDs()
-        {
-            //Debug.Log($"Local Player Number: {PhotonNetwork.LocalPlayer.ActorNumber}");
+            // 新しいルームを作成
+            RoomOptions roomOptions = new RoomOptions();
+            roomOptions.MaxPlayers = 2;
+            PhotonNetwork.CreateRoom(battleRoomName, roomOptions);
+
+            // 全てのプレイヤーを新しいルームに移動
+            yield return new WaitForSeconds(1.0f);
+            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.JoinRoom(battleRoomName);
         }
         #endregion
     }
