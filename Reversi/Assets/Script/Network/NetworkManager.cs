@@ -56,6 +56,7 @@ namespace NetWork
         /// </summary>
         public override void OnJoinedRoom()
         {
+            Debug.Log(PhotonNetwork.NetworkClientState);
             matchingController.MatchingStart();
         }
         #endregion
