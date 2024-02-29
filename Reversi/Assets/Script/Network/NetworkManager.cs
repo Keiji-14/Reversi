@@ -1,5 +1,6 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
+using UniRx;
 using UnityEngine;
 
 namespace NetWork
@@ -8,6 +9,8 @@ namespace NetWork
     {
         #region PublicField
         public static NetworkManager instance = null;
+        /// <summary>オンライン対戦を開始する処理</summary>
+        public Subject<Unit> OnlineBattleStartSubject = new Subject<Unit>();
         #endregion
 
         #region SerializeField
@@ -22,6 +25,8 @@ namespace NetWork
             {
                 instance = this;
                 DontDestroyOnLoad(gameObject);
+
+                Init();
             }
             else
             {
@@ -52,6 +57,20 @@ namespace NetWork
         public override void OnJoinedRoom()
         {
             matchingController.MatchingStart();
+        }
+        #endregion
+
+        #region PrivateMethod
+        /// <summary>
+        /// 初期化
+        /// </summary>
+        private void Init()
+        {
+            matchingController.MatchingCompletedSubject.Subscribe(_ =>
+            {
+                GameData.GameDataManager.instance.SetIsPlayer(PhotonNetwork.LocalPlayer.ActorNumber == 1 ? true : false);
+                OnlineBattleStartSubject.OnNext(Unit.Default);
+            }).AddTo(this);
         }
         #endregion
     }

@@ -53,7 +53,6 @@ namespace Reversi
             reversiStone = stone;
             this.stoneType = stoneType;
 
-
             stone.Init(stoneType);
         }
 

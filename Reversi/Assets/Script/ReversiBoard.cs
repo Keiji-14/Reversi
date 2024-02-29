@@ -1,4 +1,6 @@
-﻿using UniRx;
+﻿using Photon.Pun;
+using Photon.Realtime;
+using UniRx;
 using UnityEngine;
 
 namespace Reversi
@@ -126,10 +128,21 @@ namespace Reversi
             }
         }
 
+        private void PlaceStone(ReversiStone stoneObj, int row, int col)
+        {
+            if (IsValidSet(row, col, stoneTypeTurns))
+            {
+                var photonView = stoneObj.GetComponent<PhotonView>();
+                photonView.RPC("PlaceStoneRPC", RpcTarget.AllBuffered, row, col);
+            }
+        }
+
+
         /// <summary>
         /// 盤面の石を配置する処理
         /// </summary
-        private void PlaceStone(ReversiStone stoneObj, int row, int col)
+        [PunRPC]
+        private void PlaceStoneRPC(ReversiStone stoneObj, int row, int col)
         {
             if (IsValidSet(row, col, stoneTypeTurns)) 
             {

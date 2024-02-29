@@ -1,10 +1,17 @@
-﻿using System;
+﻿using NetWork;
+using Scene;
+using GameData;
+using Reversi;
+using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Title
 {
+    /// <summary>
+    /// タイトル画面の処理管理
+    /// </summary>
     public class TitleController : MonoBehaviour
     {
         #region PrivateField
@@ -26,7 +33,13 @@ namespace Title
         {
             InputOnlinePlayerObservable.Subscribe(_ =>
             {
-                NetWork.NetworkManager.instance.ConnectUsingSettings();
+                NetworkManager.instance.ConnectUsingSettings();
+            }).AddTo(this);
+
+            NetworkManager.instance.OnlineBattleStartSubject.Subscribe(_ =>
+            {
+                GameDataManager.instance.SetGameMode(GameMode.Online);
+                SceneLoader.Instance().Load(SceneLoader.SceneName.Reversi);
             }).AddTo(this);
         }
         #endregion
