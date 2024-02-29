@@ -1,6 +1,7 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
+using UniRx;
 using UnityEngine;
 
 namespace NetWork
@@ -11,7 +12,12 @@ namespace NetWork
     public class MatchingController : MonoBehaviour
     {
         #region PrivateField
-        /// <summary></summary>
+        /// <summary>マッチング完了時の処理</summary>
+        public Subject<Unit> MatchingCompletedSubject = new Subject<Unit>();
+        #endregion
+
+        #region PrivateField
+        /// <summary>マッチング中かどうかの処理</summary>
         private bool isMatching = false;
         /// <summary>ゲームが開始済みかどうか</summary>
         private bool isGameStarted = false;
@@ -34,7 +40,7 @@ namespace NetWork
             {
                 isGameStarted = true;
 
-                
+                StartCoroutine(MovePlayersBattleRoom());
             }
         }
         #endregion
@@ -61,9 +67,11 @@ namespace NetWork
             PhotonNetwork.CreateRoom(battleRoomName, roomOptions);
 
             // 全てのプレイヤーを新しいルームに移動
-            yield return new WaitForSeconds(1.0f);
+            yield return null;
             PhotonNetwork.LeaveRoom();
             PhotonNetwork.JoinRoom(battleRoomName);
+
+            MatchingCompletedSubject.OnNext(Unit.Default);
         }
         #endregion
     }

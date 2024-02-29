@@ -1,4 +1,7 @@
-﻿using Reversi;
+﻿using NetWork;
+using Scene;
+using GameData;
+using Reversi;
 using System;
 using UniRx;
 using UnityEngine;
@@ -30,7 +33,13 @@ namespace Title
         {
             InputOnlinePlayerObservable.Subscribe(_ =>
             {
-                NetWork.NetworkManager.instance.ConnectUsingSettings();
+                NetworkManager.instance.ConnectUsingSettings();
+            }).AddTo(this);
+
+            NetworkManager.instance.OnlineBattleStartSubject.Subscribe(_ =>
+            {
+                GameDataManager.instance.SetGameMode(GameMode.Online);
+                SceneLoader.Instance().Load(SceneLoader.SceneName.Reversi);
             }).AddTo(this);
         }
         #endregion

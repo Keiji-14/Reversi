@@ -1,4 +1,5 @@
-﻿using UniRx;
+﻿using GameData;
+using UniRx;
 using UnityEngine;
 
 namespace Reversi
@@ -40,8 +41,15 @@ namespace Reversi
         public void Init()
         {
             // Todo: ゲームモードを識別する処理を追加する
-
-            firstMove = GetRandomPlayer();
+            switch (GameDataManager.instance.GetGameMode())
+            {
+                case GameMode.CPU:
+                    firstMove = GetRandomPlayer();
+                    break;
+                case GameMode.Online:
+                    DeterminePlayerOrder();
+                    break;
+            }
 
             reversiUIInit();
 
@@ -68,6 +76,14 @@ namespace Reversi
             reversiUI.Init();
 
             reversiUI.ViewStoneImage(firstMove);
+        }
+
+        private void DeterminePlayerOrder()
+        {
+            firstMove = GameDataManager.instance.GetIsPlayer() ? StoneType.Black : StoneType.White;
+
+            // 判定結果を表示
+            Debug.Log("Player order determined. Player 1: " + GameDataManager.instance.GetIsPlayer());
         }
 
         /// <summary>
