@@ -21,6 +21,8 @@ namespace GameData
             if (instance == null)
             {
                 instance = this;
+                DontDestroyOnLoad(gameObject);
+
                 GameDataInit();
             }
             else

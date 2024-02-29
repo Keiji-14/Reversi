@@ -57,20 +57,7 @@ namespace NetWork
         #region PrivateMethod
         private IEnumerator MovePlayersBattleRoom()
         {
-            PhotonNetwork.ConnectUsingSettings();
-            // 対戦用の新しいルーム名を動的に生成
-            string battleRoomName = "BattleRoom" + Random.Range(1, 1000);
-
-            // 新しいルームを作成
-            RoomOptions roomOptions = new RoomOptions();
-            roomOptions.MaxPlayers = 2;
-            yield return new WaitUntil(() => PhotonNetwork.InRoom == false && PhotonNetwork.InLobby == false);
-            PhotonNetwork.CreateRoom(battleRoomName, roomOptions);
-
-            // 全てのプレイヤーを新しいルームに移動
             yield return null;
-            PhotonNetwork.LeaveRoom();
-            PhotonNetwork.JoinRoom(battleRoomName);
 
             MatchingCompletedSubject.OnNext(Unit.Default);
         }
