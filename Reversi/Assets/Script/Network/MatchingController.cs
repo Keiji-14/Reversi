@@ -38,9 +38,17 @@ namespace NetWork
             }
             else
             {
-                isGameStarted = true;
-
-                StartCoroutine(MovePlayersBattleRoom());
+                if (PhotonNetwork.InLobby)
+                {
+                    // マスターサーバーへの接続が確認されたら、対戦用の部屋を作成
+                    isGameStarted = true;
+                    StartCoroutine(MovePlayersBattleRoom());
+                }
+                else
+                {
+                    // まだマスターサーバーに接続されていない場合は待機
+                    Debug.Log("Waiting for Master Server connection...");
+                }
             }
         }
         #endregion
@@ -58,6 +66,7 @@ namespace NetWork
         #region PrivateMethod
         private IEnumerator MovePlayersBattleRoom()
         {
+            PhotonNetwork.ConnectUsingSettings();
             // 対戦用の新しいルーム名を動的に生成
             string battleRoomName = "BattleRoom" + Random.Range(1, 1000);
 
