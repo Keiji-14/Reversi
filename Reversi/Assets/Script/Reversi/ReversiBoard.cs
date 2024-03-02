@@ -1,5 +1,5 @@
-﻿using Photon.Pun;
-using System.Collections;
+﻿using GameData;
+using Photon.Pun;
 using UniRx;
 using UnityEngine;
 
@@ -8,7 +8,7 @@ namespace Reversi
     /// <summary>
     /// オセロゲームの盤面
     /// </summary>
-    public class ReversiBoard : MonoBehaviourPunCallbacks
+    public class ReversiBoard : MonoBehaviour
     {
         #region PublicField
         /// <summary>ゲーム終了時の処理</summary>
@@ -99,10 +99,10 @@ namespace Reversi
         /// </summary>
         private void SetupInitialStones()
         {
-            PlaceInitStone(reversiStoneObj, StoneType.Black, 3, 3);
-            PlaceInitStone(reversiStoneObj, StoneType.Black, 4, 4);
-            PlaceInitStone(reversiStoneObj, StoneType.White, 3, 4);
-            PlaceInitStone(reversiStoneObj, StoneType.White, 4, 3);
+            PlaceInitStone(3, 3, StoneType.Black);
+            PlaceInitStone(4, 4, StoneType.Black);
+            PlaceInitStone(3, 4, StoneType.White);
+            PlaceInitStone(4, 3, StoneType.White);
 
             HighlightPlaceStone();
 
@@ -112,10 +112,22 @@ namespace Reversi
         /// <summary>
         /// 盤面の石を初期配置する
         /// </summary>
-        private void PlaceInitStone(ReversiStone stoneObj, StoneType stoneType, int row, int col)
+        private void PlaceInitStone(int row, int col, StoneType stoneType)
         {
-            ReversiStone stone = Instantiate(stoneObj, stoneGroup);
-            boardTiles[row, col].SetStone(stone, stoneType);
+            ReversiStone stone;
+
+            switch (GameDataManager.instance.GetGameMode())
+            {
+                case GameMode.CPU:
+                    stone = Instantiate(reversiStoneObj, stoneGroup);
+                    boardTiles[row, col].SetStone(stone, stoneType);
+                    break;
+                case GameMode.Online:
+                    GameObject stoneObj = PhotonNetwork.Instantiate("reversiStoneObj", Vector3.zero, Quaternion.identity);
+                    stone = stoneObj.GetComponent<ReversiStone>();
+                    boardTiles[row, col].SetStone(stone, stoneType);
+                    break;
+            }
         }
 
         /// <summary>
@@ -136,29 +148,9 @@ namespace Reversi
         {
             if (IsValidSet(row, col, stoneTypeTurns))
             {
-                GameObject stoneObject = PhotonNetwork.Instantiate(reversiStoneObj.name, stoneGroup.position, stoneGroup.rotation);
+                var photonView = reversiStoneObj.GetComponent<PhotonView>();
 
-                ReversiStone stone = stoneObject.GetComponent<ReversiStone>();
-                var photonView = stoneObject.GetComponent<PhotonView>();
-                boardTiles[row, col].SetStone(stone, stoneTypeTurns);
-
-                StartCoroutine(WaitForPhotonView(photonView, row, col, (int)stoneTypeTurns));
-            }
-        }
-
-        private IEnumerator WaitForPhotonView(PhotonView photonView, int row, int col, int stoneType)
-        {
-            // PhotonViewが同期されるまで待つ
-            yield return new WaitUntil(() => photonView.IsMine);
-
-            // View IDが正しく設定されているか確認
-            if (photonView.ViewID != 0)
-            {
-                photonView.RPC("PlaceStoneRPC", RpcTarget.AllBuffered, row, col, stoneType);
-            }
-            else
-            {
-                Debug.LogError("PhotonView's View ID is still 0 after synchronization.");
+                photonView.RPC("PlaceStoneRPC", RpcTarget.AllBuffered, row, col, (int)stoneTypeTurns);
             }
         }
 
@@ -172,6 +164,9 @@ namespace Reversi
 
             if (IsValidSet(row, col, stoneTypeTurns)) 
             {
+                ReversiStone stone = Instantiate(reversiStoneObj, stoneGroup);
+                boardTiles[row, col].SetStone(stone, stoneTypeTurns);
+
                 // 反転処理
                 FlipStones(row, col, stoneTypeTurns);
 
@@ -363,6 +358,8 @@ namespace Reversi
 
             // ハイライト表示を更新する
             HighlightPlaceStone();
+
+            StoneTypeTurnsSubject.OnNext(stoneTypeTurns);
         }
 
         /// <summary>
