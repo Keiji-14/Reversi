@@ -84,7 +84,7 @@ namespace Reversi
 
             tileObj.SetStoneObservable.Subscribe(tileInfo =>
             {
-                PlaceStone(reversiStoneObj, tileInfo.row, tileInfo.col);
+                PlaceStone(tileInfo.row, tileInfo.col);
             }).AddTo(this);
 
             boardTiles[row, col] = tileObj;
@@ -128,27 +128,28 @@ namespace Reversi
             }
         }
 
-        private void PlaceStone(ReversiStone stoneObj, int row, int col)
+        private void PlaceStone(int row, int col)
         {
             if (IsValidSet(row, col, stoneTypeTurns))
             {
-                var photonView = stoneObj.GetComponent<PhotonView>();
-                photonView.RPC("PlaceStoneRPC", RpcTarget.AllBuffered, row, col);
+                ReversiStone stone = Instantiate(reversiStoneObj, stoneGroup);
+                boardTiles[row, col].SetStone(stone, stoneTypeTurns);
+
+                var photonView = stone.GetComponent<PhotonView>();
+                photonView.RPC("PlaceStoneRPC", RpcTarget.AllBuffered, row, col, (int)stoneTypeTurns);
             }
         }
-
 
         /// <summary>
         /// 盤面の石を配置する処理
         /// </summary
         [PunRPC]
-        private void PlaceStoneRPC(ReversiStone stoneObj, int row, int col)
+        private void PlaceStoneRPC(int row, int col, int stoneType)
         {
+            StoneType stoneTypeTurns = (StoneType)stoneType;
+
             if (IsValidSet(row, col, stoneTypeTurns)) 
             {
-                ReversiStone stone = Instantiate(stoneObj, stoneGroup);
-                boardTiles[row, col].SetStone(stone, stoneTypeTurns);
-
                 // 反転処理
                 FlipStones(row, col, stoneTypeTurns);
 
