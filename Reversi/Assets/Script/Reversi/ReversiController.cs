@@ -23,8 +23,8 @@ namespace Reversi
         private int playerStoneNum;
         /// <summary>相手側のオセロ石の数</summary>
         private int opponentStoneNum;
-        /// <summary>先攻後攻の判定</summary>
-        private StoneType firstMove;
+        /// <summary>プレイヤーの石タイプ</summary>
+        private StoneType playerStoneType;
         #endregion
 
         #region SerializeField
@@ -44,7 +44,7 @@ namespace Reversi
             switch (GameDataManager.instance.GetGameMode())
             {
                 case GameMode.CPU:
-                    firstMove = GetRandomPlayer();
+                    playerStoneType = GetRandomPlayer();
                     break;
                 case GameMode.Online:
                     DeterminePlayerOrder();
@@ -56,6 +56,11 @@ namespace Reversi
             reversiBoard.GameFinishedSubject.Subscribe(_ =>
             {
                 Outcome();
+            }).AddTo(this);
+
+            reversiBoard.StoneTypeTurnsSubject.Subscribe(stoneType =>
+            {
+                reversiUI.OpponentTurnsUI(playerStoneType != stoneType ? true : false);
             }).AddTo(this);
 
             reversiBoard.StoneCountSubject.Subscribe(stoneNumInfo =>
@@ -75,15 +80,15 @@ namespace Reversi
         {
             reversiUI.Init();
 
-            reversiUI.ViewStoneImage(firstMove);
+            reversiUI.ViewStoneImage(playerStoneType);
         }
 
+        /// <summary>
+        /// オンライン対戦で先攻後攻を決める処理
+        /// </summary>
         private void DeterminePlayerOrder()
         {
-            firstMove = GameDataManager.instance.GetIsPlayer() ? StoneType.Black : StoneType.White;
-
-            // 判定結果を表示
-            Debug.Log("Player order determined. Player 1: " + GameDataManager.instance.GetIsPlayer());
+            playerStoneType = GameDataManager.instance.GetIsPlayer() ? StoneType.Black : StoneType.White;
         }
 
         /// <summary>
@@ -92,7 +97,7 @@ namespace Reversi
         private void SetStoneNum(StoneNumInfo stoneNumInfo)
         {
             // 先攻だった場合
-            (playerStoneNum, opponentStoneNum) = (firstMove == StoneType.Black)
+            (playerStoneNum, opponentStoneNum) = (playerStoneType == StoneType.Black)
                 ? (stoneNumInfo.blackStoneNum, stoneNumInfo.whiteStoneNum)
                 : (stoneNumInfo.whiteStoneNum, stoneNumInfo.blackStoneNum);
 

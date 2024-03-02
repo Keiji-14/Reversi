@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Photon.Pun;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Reversi
@@ -17,7 +18,7 @@ namespace Reversi
     /// <summary>
     /// オセロの石
     /// </summary>
-    public class ReversiStone : MonoBehaviour
+    public class ReversiStone : MonoBehaviourPun
     {
         #region SerializeField
         [SerializeField] private Sprite blackSprite;

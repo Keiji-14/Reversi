@@ -20,6 +20,8 @@ namespace Reversi
         [SerializeField] private TextMeshProUGUI playerStoneNumText;
         /// <summary>相手側のオセロ石の数のテキスト</summary>
         [SerializeField] private TextMeshProUGUI opponentStoneNumText;
+        /// <summary>相手ターン中に表示するUIオブジェクト</summary>
+        [SerializeField] private GameObject opponentTurnsUIObj;
         #endregion
 
         #region PublicMethod
@@ -31,6 +33,8 @@ namespace Reversi
             // 石の数を初期化する
             playerStoneNumText.text = "0";
             opponentStoneNumText.text = "0";
+
+            opponentTurnsUIObj.SetActive(false);
         }
 
         /// <summary>
@@ -50,6 +54,11 @@ namespace Reversi
         {
             playerStoneImg.sprite = type == StoneType.Black ? blackSprite : whiteSprite;
             opponentStoneImg.sprite = type == StoneType.Black ? whiteSprite : blackSprite;
+        }
+
+        public void OpponentTurnsUI(bool isOpponentTurn)
+        {
+            opponentTurnsUIObj.SetActive(isOpponentTurn);
         }
         #endregion
     }

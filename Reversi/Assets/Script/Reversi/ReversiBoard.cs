@@ -1,5 +1,5 @@
 ﻿using Photon.Pun;
-using Photon.Realtime;
+using System.Collections;
 using UniRx;
 using UnityEngine;
 
@@ -8,12 +8,14 @@ namespace Reversi
     /// <summary>
     /// オセロゲームの盤面
     /// </summary>
-    public class ReversiBoard : MonoBehaviour
+    public class ReversiBoard : MonoBehaviourPunCallbacks
     {
         #region PublicField
-        /// <summary>ゲーム終了時の処理 </summary>
+        /// <summary>ゲーム終了時の処理</summary>
         public Subject<Unit> GameFinishedSubject = new Subject<Unit>();
-        /// <summary>盤面上の石の数をカウントする処理 </summary>
+        /// <summary>自分のターンか判定する処理</summary>
+        public Subject<StoneType> StoneTypeTurnsSubject = new Subject<StoneType>();
+        /// <summary>盤面上の石の数をカウントする処理</summary>
         public Subject<StoneNumInfo> StoneCountSubject = new Subject<StoneNumInfo>();
         #endregion
 
@@ -49,6 +51,8 @@ namespace Reversi
             CreateBoard();
 
             SetupInitialStones();
+
+            StoneTypeTurnsSubject.OnNext(stoneTypeTurns);
         }
         #endregion
 
@@ -132,11 +136,29 @@ namespace Reversi
         {
             if (IsValidSet(row, col, stoneTypeTurns))
             {
-                ReversiStone stone = Instantiate(reversiStoneObj, stoneGroup);
+                GameObject stoneObject = PhotonNetwork.Instantiate(reversiStoneObj.name, stoneGroup.position, stoneGroup.rotation);
+
+                ReversiStone stone = stoneObject.GetComponent<ReversiStone>();
+                var photonView = stoneObject.GetComponent<PhotonView>();
                 boardTiles[row, col].SetStone(stone, stoneTypeTurns);
 
-                var photonView = stone.GetComponent<PhotonView>();
-                photonView.RPC("PlaceStoneRPC", RpcTarget.AllBuffered, row, col, (int)stoneTypeTurns);
+                StartCoroutine(WaitForPhotonView(photonView, row, col, (int)stoneTypeTurns));
+            }
+        }
+
+        private IEnumerator WaitForPhotonView(PhotonView photonView, int row, int col, int stoneType)
+        {
+            // PhotonViewが同期されるまで待つ
+            yield return new WaitUntil(() => photonView.IsMine);
+
+            // View IDが正しく設定されているか確認
+            if (photonView.ViewID != 0)
+            {
+                photonView.RPC("PlaceStoneRPC", RpcTarget.AllBuffered, row, col, stoneType);
+            }
+            else
+            {
+                Debug.LogError("PhotonView's View ID is still 0 after synchronization.");
             }
         }
 
