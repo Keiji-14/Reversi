@@ -41,6 +41,8 @@ MonoBehaviour:
   - RespawnSpaceship
   - PlaceStoneRPC
   - RPC
+  - PlaceInitStone
+  - PlaceInitStonePCR
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -70,10 +70,9 @@ namespace NetWork
             matchingController.MatchingCompletedSubject.Subscribe(_ =>
             {
                 GameData.GameDataManager.instance.SetIsPlayer(PhotonNetwork.LocalPlayer.ActorNumber == 1 ? true : false);
+
                 OnlineBattleStartSubject.OnNext(Unit.Default);
             }).AddTo(this);
-
-            Debug.Log("Iinit");
         }
         #endregion
     }

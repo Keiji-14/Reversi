@@ -123,7 +123,8 @@ namespace Reversi
                     boardTiles[row, col].SetStone(stone, stoneType);
                     break;
                 case GameMode.Online:
-                    GameObject stoneObj = PhotonNetwork.Instantiate("reversiStoneObj", Vector3.zero, Quaternion.identity);
+                    GameObject stoneObj = PhotonNetwork.Instantiate(reversiStoneObj.name, Vector3.zero, Quaternion.identity);
+                    stoneObj.transform.SetParent(stoneGroup);
                     stone = stoneObj.GetComponent<ReversiStone>();
                     boardTiles[row, col].SetStone(stone, stoneType);
                     break;
