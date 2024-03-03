@@ -1,5 +1,6 @@
 ﻿using GameData;
 using Photon.Pun;
+using System.Collections;
 using UniRx;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Reversi
     /// <summary>
     /// オセロゲームの盤面
     /// </summary>
-    public class ReversiBoard : MonoBehaviour
+    public class ReversiBoard : MonoBehaviourPunCallbacks
     {
         #region PublicField
         /// <summary>ゲーム終了時の処理</summary>
@@ -88,7 +89,7 @@ namespace Reversi
 
             tileObj.SetStoneObservable.Subscribe(tileInfo =>
             {
-                PlaceStone(tileInfo.row, tileInfo.col);
+                SetStone(tileInfo.row, tileInfo.col);
             }).AddTo(this);
 
             boardTiles[row, col] = tileObj;
@@ -145,49 +146,83 @@ namespace Reversi
             }
         }
 
-        private void PlaceStone(int row, int col)
+        /// <summary>
+        /// 石を配置する処理
+        /// </summary
+        private void SetStone(int row, int col)
         {
             if (IsValidSet(row, col, stoneTypeTurns))
             {
-                var photonView = reversiStoneObj.GetComponent<PhotonView>();
-
-                photonView.RPC("PlaceStoneRPC", RpcTarget.AllBuffered, row, col, (int)stoneTypeTurns);
+                switch (GameDataManager.instance.GetGameMode())
+                {
+                    case GameMode.CPU:
+                        PlaceStone(row, col);
+                        break;
+                    case GameMode.Online:
+                        photonView.RPC(nameof(RpcPlaceStone), RpcTarget.All, row, col);
+                        break;
+                }
             }
         }
 
         /// <summary>
-        /// 盤面の石を配置する処理
+        /// 盤面に石を配置する処理
+        /// </summary
+        private void PlaceStone(int row, int col)
+        {
+            ReversiStone stone = Instantiate(reversiStoneObj, stoneGroup);
+            boardTiles[row, col].SetStone(stone, stoneTypeTurns);
+
+            // 反転処理
+            FlipStones(row, col, stoneTypeTurns);
+
+            // 手番交代
+            TurnShift();
+
+            // 石のカウントを更新する
+            StoneCount();
+
+            // 置ける場所が無い場合、手番交代する
+            if (!IsPlaceStone(stoneTypeTurns))
+            {
+                TurnShift();
+            }
+
+            // 終了判定
+            if (IsGameFinished())
+            {
+                GameFinishedSubject.OnNext(Unit.Default);
+            }
+        }
+
+        /// <summary>
+        /// 盤面に石を配置する処理
         /// </summary
         [PunRPC]
-        private void PlaceStoneRPC(int row, int col, int stoneType)
+        private void RpcPlaceStone(int row, int col)
         {
-            StoneType stoneTypeTurns = (StoneType)stoneType;
+            ReversiStone stone = Instantiate(reversiStoneObj, stoneGroup);
+            boardTiles[row, col].SetStone(stone, stoneTypeTurns);
 
-            if (IsValidSet(row, col, stoneTypeTurns)) 
+            // 反転処理
+            FlipStones(row, col, stoneTypeTurns);
+
+            // 手番交代
+            TurnShift();
+
+            // 石のカウントを更新する
+            StoneCount();
+
+            // 置ける場所が無い場合、手番交代する
+            if (!IsPlaceStone(stoneTypeTurns))
             {
-                ReversiStone stone = Instantiate(reversiStoneObj, stoneGroup);
-                boardTiles[row, col].SetStone(stone, stoneTypeTurns);
-
-                // 反転処理
-                FlipStones(row, col, stoneTypeTurns);
-
-                // 手番交代
                 TurnShift();
+            }
 
-                // 石のカウントを更新する
-                StoneCount();
-
-                // 置ける場所が無い場合、手番交代する
-                if (!IsPlaceStone(stoneTypeTurns))
-                {
-                    TurnShift();
-                }
-
-                // 終了判定
-                if (IsGameFinished())
-                {
-                    GameFinishedSubject.OnNext(Unit.Default);
-                }
+            // 終了判定
+            if (IsGameFinished())
+            {
+                GameFinishedSubject.OnNext(Unit.Default);
             }
         }
 
