@@ -100,11 +100,22 @@ namespace Reversi
         /// </summary>
         private void SetupInitialStones()
         {
-            PlaceInitStone(3, 3, StoneType.Black);
-            PlaceInitStone(4, 4, StoneType.Black);
-            PlaceInitStone(3, 4, StoneType.White);
-            PlaceInitStone(4, 3, StoneType.White);
-
+            switch (GameDataManager.instance.GetGameMode())
+            {
+                case GameMode.CPU:
+                    PlaceInitStone(3, 3, StoneType.Black);
+                    PlaceInitStone(4, 4, StoneType.Black);
+                    PlaceInitStone(3, 4, StoneType.White);
+                    PlaceInitStone(4, 3, StoneType.White);
+                    break;
+                case GameMode.Online:
+                    photonView.RPC(nameof(RpcPlaceInitStone), RpcTarget.All, 3, 3, StoneType.Black);
+                    photonView.RPC(nameof(RpcPlaceInitStone), RpcTarget.All, 4, 4, StoneType.Black);
+                    photonView.RPC(nameof(RpcPlaceInitStone), RpcTarget.All, 3, 4, StoneType.White);
+                    photonView.RPC(nameof(RpcPlaceInitStone), RpcTarget.All, 4, 3, StoneType.White);
+                    break;
+            }
+            
             HighlightPlaceStone();
 
             StoneCount();
@@ -115,21 +126,18 @@ namespace Reversi
         /// </summary>
         private void PlaceInitStone(int row, int col, StoneType stoneType)
         {
-            ReversiStone stone;
+            ReversiStone stone = Instantiate(reversiStoneObj, stoneGroup);
+            boardTiles[row, col].SetStone(stone, stoneType);
+        }
 
-            switch (GameDataManager.instance.GetGameMode())
-            {
-                case GameMode.CPU:
-                    stone = Instantiate(reversiStoneObj, stoneGroup);
-                    boardTiles[row, col].SetStone(stone, stoneType);
-                    break;
-                case GameMode.Online:
-                    GameObject stoneObj = PhotonNetwork.Instantiate(reversiStoneObj.name, Vector3.zero, Quaternion.identity);
-                    stoneObj.transform.SetParent(stoneGroup);
-                    stone = stoneObj.GetComponent<ReversiStone>();
-                    boardTiles[row, col].SetStone(stone, stoneType);
-                    break;
-            }
+        /// <summary>
+        /// 盤面の石を初期配置する
+        /// </summary>
+        [PunRPC]
+        private void RpcPlaceInitStone(int row, int col, StoneType stoneType)
+        {
+            ReversiStone stone = Instantiate(reversiStoneObj, stoneGroup);
+            boardTiles[row, col].SetStone(stone, stoneType);
         }
 
         /// <summary>
