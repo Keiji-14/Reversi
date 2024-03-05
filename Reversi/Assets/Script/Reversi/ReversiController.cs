@@ -9,7 +9,8 @@ namespace Reversi
     /// </summary>
     public enum GameMode
     {
-        CPU,
+        OnePlay,
+        TowPlay,
         Online,
     }
 
@@ -43,7 +44,10 @@ namespace Reversi
             // Todo: ゲームモードを識別する処理を追加する
             switch (GameDataManager.instance.GetGameMode())
             {
-                case GameMode.CPU:
+                case GameMode.OnePlay:
+                    playerStoneType = GetRandomPlayer();
+                    break;
+                case GameMode.TowPlay:
                     playerStoneType = GetRandomPlayer();
                     break;
                 case GameMode.Online:
@@ -111,15 +115,15 @@ namespace Reversi
         {
             if (playerStoneNum > opponentStoneNum)
             {
-                Debug.Log("Player Win");
+                reversiUI.YouWinUI();
             }
             else if (playerStoneNum == opponentStoneNum)
             {
-                Debug.Log("Drow");
+                reversiUI.DrowUI();
             }
             else
             {
-                Debug.Log("Player Lose");
+                reversiUI.YouLoseUI();
             }
         }
         

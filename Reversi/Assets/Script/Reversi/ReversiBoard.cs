@@ -102,7 +102,7 @@ namespace Reversi
         {
             switch (GameDataManager.instance.GetGameMode())
             {
-                case GameMode.CPU:
+                case GameMode.OnePlay:
                     PlaceInitStone(3, 3, StoneType.Black);
                     PlaceInitStone(4, 4, StoneType.Black);
                     PlaceInitStone(3, 4, StoneType.White);
@@ -163,7 +163,7 @@ namespace Reversi
             {
                 switch (GameDataManager.instance.GetGameMode())
                 {
-                    case GameMode.CPU:
+                    case GameMode.OnePlay:
                         PlaceStone(row, col);
                         break;
                     case GameMode.Online:

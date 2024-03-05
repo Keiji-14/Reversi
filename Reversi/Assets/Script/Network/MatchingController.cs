@@ -31,12 +31,7 @@ namespace NetWork
                 return;
 
             // ここに他のプレイヤーがいるかどうかを確認する処理を追加
-            if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
-            {
-                // 他のプレイヤーを待つか、新しいプレイヤーが参加するまで待機
-                Debug.Log("Waiting for another player...");
-            }
-            else
+            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
             {
                 isGameStarted = true;
                 StartCoroutine(MovePlayersBattleRoom());
@@ -51,6 +46,15 @@ namespace NetWork
         public void MatchingStart()
         {
             isMatching = true;
+        }
+
+        /// <summary>
+        /// マッチングを終了する処理
+        /// </summary>
+        public void MatchingFinish()
+        {
+            isMatching = false;
+
         }
         #endregion
 
