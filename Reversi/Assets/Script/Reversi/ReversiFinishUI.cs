@@ -1,4 +1,4 @@
-using NetWork;
+ï»¿using NetWork;
 using System;
 using UniRx;
 using UnityEngine;
@@ -7,43 +7,43 @@ using UnityEngine.UI;
 namespace Reversi
 {
     /// <summary>
-    /// ƒIƒZƒƒQ[ƒ€I—¹‚ÌUI
+    /// ã‚ªã‚»ãƒ­ã‚²ãƒ¼ãƒ çµ‚äº†ã®UI
     /// </summary>
     public class ReversiFinishUI : MonoBehaviour
     {
         #region PrivateField
-        /// <summary>ƒ^ƒCƒgƒ‹‚É–ß‚é‚Ìˆ—</summary>
+        /// <summary>ã‚¿ã‚¤ãƒˆãƒ«ã«æˆ»ã‚‹æ™‚ã®å‡¦ç†</summary>
         public Subject<Unit> TitleBackSubject = new Subject<Unit>();
         #endregion
 
         #region PrivateField
-        /// <summary>ƒ^ƒCƒgƒ‹‚É–ß‚éƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚Ìˆ—</summary>
+        /// <summary>ã‚¿ã‚¤ãƒˆãƒ«ã«æˆ»ã‚‹ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸæ™‚ã®å‡¦ç†</summary>
         private IObservable<Unit> InputTitleBackBtnObservable =>
             titleBackBtn.OnClickAsObservable();
         #endregion
 
         #region SerializeField
-        /// <summary>ƒ^ƒCƒgƒ‹‚É–ß‚éƒ{ƒ^ƒ“</summary>
+        /// <summary>ã‚¿ã‚¤ãƒˆãƒ«ã«æˆ»ã‚‹ãƒœã‚¿ãƒ³</summary>
         [SerializeField] private Button titleBackBtn;
-        /// <summary>I—¹‚É•\¦‚·‚éƒEƒBƒ“ƒhƒE</summary>
+        /// <summary>çµ‚äº†æ™‚ã«è¡¨ç¤ºã™ã‚‹ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦</summary>
         [SerializeField] private GameObject finishWindowObj;
-        /// <summary>Ÿ‚Á‚½‚É•\¦‚·‚éUIƒIƒuƒWƒFƒNƒg</summary>
+        /// <summary>å‹ã£ãŸæ™‚ã«è¡¨ç¤ºã™ã‚‹UIã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ</summary>
         [SerializeField] private GameObject youWinUIObj;
-        /// <summary>•‰‚¯‚½‚É•\¦‚·‚éUIƒIƒuƒWƒFƒNƒg</summary>
+        /// <summary>è² ã‘ãŸæ™‚ã«è¡¨ç¤ºã™ã‚‹UIã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ</summary>
         [SerializeField] private GameObject youLoseUIObj;
-        /// <summary>ˆø‚«•ª‚¯‚É•\¦‚·‚éUIƒIƒuƒWƒFƒNƒg</summary>
+        /// <summary>å¼•ãåˆ†ã‘æ™‚ã«è¡¨ç¤ºã™ã‚‹UIã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ</summary>
         [SerializeField] private GameObject deowUIObj;
         #endregion
 
         #region PublicMethod
         /// <summary>
-        /// ‰Šú‰»
+        /// åˆæœŸåŒ–
         /// </summary>
         public void Init()
         {
             finishWindowObj.SetActive(false);
 
-            // ƒ^ƒCƒgƒ‹‚É–ß‚éƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚Ìˆ—
+            // ã‚¿ã‚¤ãƒˆãƒ«ã«æˆ»ã‚‹ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸæ™‚ã®å‡¦ç†
             InputTitleBackBtnObservable.Subscribe(_ =>
             {
                 TitleBackSubject.OnNext(Unit.Default);
@@ -51,7 +51,7 @@ namespace Reversi
         }
 
         /// <summary>
-        /// I—¹‚É•\¦‚·‚éUI
+        /// çµ‚äº†æ™‚ã«è¡¨ç¤ºã™ã‚‹UI
         /// </summary>
         public void FinishWindowUI()
         {
@@ -59,7 +59,7 @@ namespace Reversi
         }
 
         /// <summary>
-        /// Ÿ‚Á‚½‚É•\¦‚·‚éUI
+        /// å‹ã£ãŸæ™‚ã«è¡¨ç¤ºã™ã‚‹UI
         /// </summary>
         public void YouWinUI()
         {
@@ -67,7 +67,7 @@ namespace Reversi
         }
 
         /// <summary>
-        /// •‰‚¯‚½‚É•\¦‚·‚éUI
+        /// è² ã‘ãŸæ™‚ã«è¡¨ç¤ºã™ã‚‹UI
         /// </summary>
         public void YouLoseUI()
         {
@@ -75,7 +75,7 @@ namespace Reversi
         }
 
         /// <summary>
-        /// ˆø‚«•ª‚¯‚É•\¦‚·‚éUI
+        /// å¼•ãåˆ†ã‘æ™‚ã«è¡¨ç¤ºã™ã‚‹UI
         /// </summary>
         public void DrowUI()
         {
