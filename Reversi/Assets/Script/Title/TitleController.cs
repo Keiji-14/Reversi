@@ -3,11 +3,10 @@ using Scene;
 using GameData;
 using Reversi;
 using System;
+using System.Collections;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
-
 namespace Title
 {
     /// <summary>

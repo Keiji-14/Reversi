@@ -1,4 +1,6 @@
-﻿using GameData;
+﻿using NetWork;
+using Scene;
+using GameData;
 using UniRx;
 using UnityEngine;
 
@@ -31,6 +33,8 @@ namespace Reversi
         #region SerializeField
         /// <summary>オセロゲームのUI</summary>
         [SerializeField] private ReversiUI reversiUI;
+        /// <summary>オセロゲーム終了のUI</summary>
+        [SerializeField] private ReversiFinishUI reversiFinishUI;
         /// <summary>オセロの盤面の処理</summary>
         [SerializeField] private ReversiBoard reversiBoard;
         #endregion
@@ -56,6 +60,13 @@ namespace Reversi
             }
 
             reversiUIInit();
+
+            reversiFinishUI.Init();
+
+            reversiFinishUI.TitleBackSubject.Subscribe(_ =>
+            {
+                TitleBack();
+            }).AddTo(this);
 
             reversiBoard.GameFinishedSubject.Subscribe(_ =>
             {
@@ -115,18 +126,33 @@ namespace Reversi
         {
             if (playerStoneNum > opponentStoneNum)
             {
-                reversiUI.YouWinUI();
+                reversiFinishUI.YouWinUI();
             }
             else if (playerStoneNum == opponentStoneNum)
             {
-                reversiUI.DrowUI();
+                reversiFinishUI.DrowUI();
             }
             else
             {
-                reversiUI.YouLoseUI();
+                reversiFinishUI.YouLoseUI();
             }
+
+            reversiFinishUI.FinishWindowUI();
         }
-        
+
+        /// <summary>
+        /// タイトルシーン遷移時の処理
+        /// </summary>
+        private void TitleBack()
+        {
+            // オンライン対戦だった場合はルーム退出を行う
+            if (GameDataManager.instance.GetGameMode() == GameMode.Online)
+            {
+                NetworkManager.instance.LeaveRoom();
+            }
+            SceneLoader.Instance().Load(SceneLoader.SceneName.Title);
+        }
+
         /// <summary>
         /// 先攻後攻の結果を返す
         /// </summary>

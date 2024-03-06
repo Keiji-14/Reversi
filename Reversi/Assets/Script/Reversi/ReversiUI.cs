@@ -22,12 +22,6 @@ namespace Reversi
         [SerializeField] private TextMeshProUGUI opponentStoneNumText;
         /// <summary>相手ターン中に表示するUIオブジェクト</summary>
         [SerializeField] private GameObject opponentTurnsUIObj;
-        /// <summary>勝った時に表示するUIオブジェクト</summary>
-        [SerializeField] private GameObject youWinUIObj;
-        /// <summary>負けた時に表示するUIオブジェクト</summary>
-        [SerializeField] private GameObject youLoseUIObj;
-        /// <summary>引き分け時に表示するUIオブジェクト</summary>
-        [SerializeField] private GameObject deowUIObj;
         #endregion
 
         #region PublicMethod
@@ -68,30 +62,6 @@ namespace Reversi
         public void OpponentTurnsUI(bool isOpponentTurn)
         {
             opponentTurnsUIObj.SetActive(isOpponentTurn);
-        }
-
-        /// <summary>
-        /// 勝った時に表示するUI
-        /// </summary>
-        public void YouWinUI()
-        {
-            youWinUIObj.SetActive(true);
-        }
-
-        /// <summary>
-        /// 負けた時に表示するUI
-        /// </summary>
-        public void YouLoseUI()
-        {
-            youLoseUIObj.SetActive(true);
-        }
-
-        /// <summary>
-        /// 引き分け時に表示するUI
-        /// </summary>
-        public void DrowUI()
-        {
-            deowUIObj.SetActive(true);
         }
         #endregion
     }
