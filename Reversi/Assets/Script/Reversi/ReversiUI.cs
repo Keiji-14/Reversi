@@ -94,7 +94,5 @@ namespace Reversi
             deowUIObj.SetActive(true);
         }
         #endregion
-
-#endregion
     }
 }

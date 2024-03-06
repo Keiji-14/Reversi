@@ -56,8 +56,16 @@ namespace NetWork
         /// </summary>
         public override void OnJoinedRoom()
         {
-            Debug.Log(PhotonNetwork.NetworkClientState);
             matchingController.MatchingStart();
+        }
+
+        /// <summary>
+        /// ゲームサーバーから退出する処理
+        /// </summary>
+        public void LeaveRoom()
+        {
+            // PhotonのLeaveRoomメソッドを使用してゲームサーバーから退出する
+            PhotonNetwork.LeaveRoom();
         }
         #endregion
 

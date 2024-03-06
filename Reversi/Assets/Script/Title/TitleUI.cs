@@ -12,6 +12,11 @@ namespace Title
     public class TitleUI : MonoBehaviour
     {
         #region PrivateField
+        /// <summary>マッチング開始の処理</summary>
+        public Subject<Unit> MatchingStartSubject = new Subject<Unit>();
+        #endregion
+
+        #region PrivateField
         /// <summary>マッチングボタンを押した時の処理</summary>
         private IObservable<Unit> InputMatchingBtnObservable =>
             matchingBtn.OnClickAsObservable();
@@ -27,6 +32,14 @@ namespace Title
         [SerializeField] private Button closeMatchingWindowBtn;
         /// <summary>マッチングウィンドウ</summary>
         [SerializeField] private GameObject matchingWindow;
+        /// <summary>マッチングロードUI</summary>
+        [SerializeField] private GameObject matchingLoadingUI;
+        /// <summary>マッチング開始のテキストUI</summary>
+        [SerializeField] private GameObject matchingStartTextUI;
+        /// <summary>マッチング中のテキストUI</summary>
+        [SerializeField] private GameObject matchingNowTextUI;
+        /// <summary>マッチング完了のテキストUI</summary>
+        [SerializeField] private GameObject matchedTextUI;
         #endregion
 
         #region PublicMethod
@@ -35,14 +48,18 @@ namespace Title
         /// </summary>
         public void Init()
         {
+            // マッチングボタンを押した時の処理
             InputMatchingBtnObservable.Subscribe(_ =>
             {
-                NetworkManager.instance.ConnectUsingSettings();
+                MatchingStartSubject.OnNext(Unit.Default);
             }).AddTo(this);
 
+            // マッチングウィンドウの閉じるボタンを押した時の処理
             InputCloseMatchingWindowBtnObservable.Subscribe(_ =>
             {
-                SwicthMatchingWindow();
+                SwicthMatchingWindow(false);
+                SwicthMatchingUI();
+                NetworkManager.instance.LeaveRoom();
             }).AddTo(this);
         }
 
@@ -52,7 +69,28 @@ namespace Title
         public void SwicthMatchingWindow(bool isView = false)
         {
             matchingWindow.SetActive(isView);
+        }
 
+        /// <summary>
+        /// マッチング状態の表示を切り替える処理
+        /// </summary>
+        public void SwicthMatchingUI(bool isView = false)
+        {
+            matchingLoadingUI.SetActive(isView);
+            matchingStartTextUI.SetActive(!isView);
+            matchingNowTextUI.SetActive(isView);
+        }
+
+        /// <summary>
+        /// マッチング完了時の表示に切り替える処理
+        /// </summary>
+        public void SwicthMatchedUI()
+        {
+            // マッチング完了時にボタンを無効化にする
+            matchingBtn.interactable = false;
+
+            matchingLoadingUI.SetActive(false);
+            matchingNowTextUI.SetActive(false);
         }
         #endregion
     }

@@ -1,11 +1,11 @@
 ﻿using Photon.Pun;
-using Photon.Realtime;
 using System.Collections;
 using UniRx;
 using UnityEngine;
 
 namespace NetWork
 {
+
     /// <summary>
     /// オンライン対戦のマッチング管理
     /// </summary>
@@ -54,11 +54,13 @@ namespace NetWork
         public void MatchingFinish()
         {
             isMatching = false;
-
         }
         #endregion
 
         #region PrivateMethod
+        /// <summary>
+        /// 対戦画面に移動する処理
+        /// </summary>
         private IEnumerator MovePlayersBattleRoom()
         {
             yield return null;
