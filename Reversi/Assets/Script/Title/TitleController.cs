@@ -78,7 +78,7 @@ namespace Title
             // 対戦画面に移動する時の処理
             NetworkManager.instance.OnlineBattleStartSubject.Subscribe(_ =>
             {
-                PlayerMatched();
+                StartCoroutine(PlayerMatched());
             }).AddTo(this);
         }
         #endregion

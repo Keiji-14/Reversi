@@ -925,7 +925,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reversiUI: {fileID: 974685305}
-  reversiFinishUI: {fileID: 0}
+  reversiFinishUI: {fileID: 974685307}
   reversiBoard: {fileID: 1970081108}
 --- !u!4 &467314860
 Transform:
