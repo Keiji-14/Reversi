@@ -91,6 +91,7 @@ namespace Title
 
             matchingLoadingUI.SetActive(false);
             matchingNowTextUI.SetActive(false);
+            matchedTextUI.SetActive(true);
         }
         #endregion
     }

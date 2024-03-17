@@ -73,9 +73,14 @@ namespace Reversi
                 Outcome();
             }).AddTo(this);
 
+            // 相手の手番を示すUIを表示する処理
             reversiBoard.StoneTypeTurnsSubject.Subscribe(stoneType =>
             {
-                reversiUI.OpponentTurnsUI(playerStoneType != stoneType ? true : false);
+                // ゲームモードがふたりで遊ぶ以外の場合
+                if (GameDataManager.instance.GetGameMode() != GameMode.TowPlay)
+                {
+                    reversiUI.OpponentTurnsUI(playerStoneType != stoneType ? true : false);
+                }
             }).AddTo(this);
 
             reversiBoard.StoneCountSubject.Subscribe(stoneNumInfo =>
@@ -96,14 +101,6 @@ namespace Reversi
             reversiUI.Init();
 
             reversiUI.ViewStoneImage(playerStoneType);
-        }
-
-        /// <summary>
-        /// オンライン対戦で先攻後攻を決める処理
-        /// </summary>
-        private void DeterminePlayerOrder()
-        {
-            playerStoneType = GameDataManager.instance.GetIsPlayer() ? StoneType.Black : StoneType.White;
         }
 
         /// <summary>
@@ -151,6 +148,14 @@ namespace Reversi
                 NetworkManager.instance.LeaveRoom();
             }
             SceneLoader.Instance().Load(SceneLoader.SceneName.Title);
+        }
+
+        /// <summary>
+        /// オンライン対戦で先攻後攻を決める処理
+        /// </summary>
+        private void DeterminePlayerOrder()
+        {
+            playerStoneType = GameDataManager.instance.GetIsPlayer() ? StoneType.Black : StoneType.White;
         }
 
         /// <summary>

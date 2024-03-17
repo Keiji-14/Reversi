@@ -108,6 +108,12 @@ namespace Reversi
                     PlaceInitStone(3, 4, StoneType.White);
                     PlaceInitStone(4, 3, StoneType.White);
                     break;
+                case GameMode.TowPlay:
+                    PlaceInitStone(3, 3, StoneType.Black);
+                    PlaceInitStone(4, 4, StoneType.Black);
+                    PlaceInitStone(3, 4, StoneType.White);
+                    PlaceInitStone(4, 3, StoneType.White);
+                    break;
                 case GameMode.Online:
                     photonView.RPC(nameof(RpcPlaceInitStone), RpcTarget.All, 3, 3, StoneType.Black);
                     photonView.RPC(nameof(RpcPlaceInitStone), RpcTarget.All, 4, 4, StoneType.Black);
@@ -164,6 +170,9 @@ namespace Reversi
                 switch (GameDataManager.instance.GetGameMode())
                 {
                     case GameMode.OnePlay:
+                        PlaceStone(row, col);
+                        break;
+                    case GameMode.TowPlay:
                         PlaceStone(row, col);
                         break;
                     case GameMode.Online:
