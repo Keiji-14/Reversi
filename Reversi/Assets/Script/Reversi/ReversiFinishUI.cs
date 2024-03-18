@@ -29,6 +29,10 @@ namespace Reversi
         [SerializeField] private GameObject finishWindowObj;
         /// <summary>勝った時に表示するUIオブジェクト</summary>
         [SerializeField] private GameObject youWinUIObj;
+        /// <summary>黒が勝った時に表示するUIオブジェクト</summary>
+        [SerializeField] private GameObject blackWinUIObj;
+        /// <summary>白が勝った時に表示するUIオブジェクト</summary>
+        [SerializeField] private GameObject whiteWinUIObj;
         /// <summary>負けた時に表示するUIオブジェクト</summary>
         [SerializeField] private GameObject youLoseUIObj;
         /// <summary>引き分け時に表示するUIオブジェクト</summary>
@@ -56,6 +60,22 @@ namespace Reversi
         public void FinishWindowUI()
         {
             finishWindowObj.SetActive(true);
+        }
+
+        /// <summary>
+        /// 黒が勝った時に表示するUI
+        /// </summary>
+        public void BlackWinUI()
+        {
+            blackWinUIObj.SetActive(true);
+        }
+
+        /// <summary>
+        /// 白が勝った時に表示するUI
+        /// </summary>
+        public void WhiteWinUI()
+        {
+            whiteWinUIObj.SetActive(true);
         }
 
         /// <summary>

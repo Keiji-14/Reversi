@@ -17,7 +17,6 @@ namespace Scene
         {
             {SceneName.Title,         "Title"},
             {SceneName.Reversi,       "Reversi"},
-            {SceneName.GameOver,      "GameOver"}
         };
         #endregion
 
