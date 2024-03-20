@@ -88,7 +88,7 @@ namespace GameData
         /// </summary>
         private void GameDataInit()
         {
-
+            playerData = new PlayerData(PlayerPrefs.GetString("UserName"));
         }
         #endregion
     }
