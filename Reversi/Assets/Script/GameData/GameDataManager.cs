@@ -50,6 +50,22 @@ namespace GameData
         }
 
         /// <summary>
+        /// プレイヤー情報を設定する処理
+        /// </summary>
+        public void SetPlayerData(PlayerData playerData)
+        {
+            this.playerData = playerData;
+        }
+
+        /// <summary>
+        /// プレイヤー情報を返す
+        /// </summary>
+        public PlayerData GetPlayerData()
+        {
+            return playerData;
+        }
+
+        /// <summary>
         /// プレイヤー1かどうかの判定を設定
         /// </summary>
         public void SetIsPlayer(bool isPlayer1)

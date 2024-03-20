@@ -37,6 +37,8 @@ namespace Title
         [SerializeField] private Button twoPlayerBtn;
         /// <summary>オンライン対戦開始ボタン</summary>
         [SerializeField] private Button onlinePlayerBtn;
+        /// <summary>初回起動時の処理</summary>
+        [SerializeField] private FirstStartup firstStartup;
         /// <summary>タイトル画面のUI</summary>
         [SerializeField] private TitleUI titleUI;
         #endregion
@@ -47,6 +49,11 @@ namespace Title
         /// </summary>
         public void Init()
         {
+            if (!PlayerPrefs.HasKey("FirstTime"))
+            {
+                firstStartup.Init();
+            }
+
             titleUI.Init();
 
             // ひとりで遊ぶボタンを押した時の処理
