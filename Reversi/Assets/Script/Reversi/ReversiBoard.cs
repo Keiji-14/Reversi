@@ -1,6 +1,5 @@
 ﻿using GameData;
 using Photon.Pun;
-using System.Collections;
 using UniRx;
 using UnityEngine;
 
@@ -29,7 +28,7 @@ namespace Reversi
         private const float spacing = 5f;
         /// <summary>手番の判定に使用</summary>
         private StoneType stoneTypeTurns;
-
+        /// <summary>盤面のマス</summary>
         private BoardTile[,] boardTiles;
         #endregion
 

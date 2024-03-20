@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace NetWork
 {
-
     /// <summary>
     /// オンライン対戦のマッチング管理
     /// </summary>

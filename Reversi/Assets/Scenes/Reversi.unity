@@ -210,7 +210,7 @@ GameObject:
   - component: {fileID: 27592504}
   - component: {fileID: 27592503}
   m_Layer: 5
-  m_Name: Image
+  m_Name: OpponentStoneImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -290,7 +290,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &110872384
 RectTransform:
   m_ObjectHideFlags: 0
@@ -953,7 +953,7 @@ GameObject:
   - component: {fileID: 557903471}
   - component: {fileID: 557903470}
   m_Layer: 5
-  m_Name: CountText
+  m_Name: PlayerCountText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1640,7 +1640,7 @@ GameObject:
   - component: {fileID: 704471821}
   - component: {fileID: 704471820}
   m_Layer: 5
-  m_Name: CountText
+  m_Name: OpponentCountText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2370,11 +2370,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30dbf02959df034b81bfedafff9fd12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onePlayOpponentName: CPU
+  towPlayOpponentName: "\u30B2\u30B9\u30C8"
   blackSprite: {fileID: 21300000, guid: 44ad3de2afe5842468c46d047fadff71, type: 3}
   whiteSprite: {fileID: 21300000, guid: 0c44272d9e7ade649887988977b36caf, type: 3}
   playerStoneImg: {fileID: 1868943251}
   opponentStoneImg: {fileID: 27592503}
+  playerNameText: {fileID: 1194800721}
   playerStoneNumText: {fileID: 557903470}
+  opponentNameText: {fileID: 1564243520}
   opponentStoneNumText: {fileID: 704471820}
   opponentTurnsUIObj: {fileID: 1310171866}
 --- !u!4 &974685306
@@ -2503,7 +2507,7 @@ GameObject:
   - component: {fileID: 1194800722}
   - component: {fileID: 1194800721}
   m_Layer: 5
-  m_Name: NameText
+  m_Name: PlayerNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2525,8 +2529,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 70, y: 0}
-  m_SizeDelta: {x: 400, y: 50}
+  m_AnchoredPosition: {x: 45, y: 0}
+  m_SizeDelta: {x: 600, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1194800721
 MonoBehaviour:
@@ -2548,10 +2552,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: "\u3042\u3042\u3042\u3042\u3042\uFF18\u6587\u5B57"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 7b4d0913d8034d64cab547e65e4bbfae, type: 2}
+  m_sharedMaterial: {fileID: -34398596193476523, guid: 7b4d0913d8034d64cab547e65e4bbfae, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2582,7 +2586,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -2887,7 +2891,7 @@ GameObject:
   - component: {fileID: 1564243521}
   - component: {fileID: 1564243520}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: OpponentNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2909,8 +2913,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 45, y: 0}
+  m_SizeDelta: {x: 600, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1564243520
 MonoBehaviour:
@@ -2932,7 +2936,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: "\u3042\u3042\u3042\u3042\u3042\uFF18\u6587\u5B57\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7b4d0913d8034d64cab547e65e4bbfae, type: 2}
   m_sharedMaterial: {fileID: -34398596193476523, guid: 7b4d0913d8034d64cab547e65e4bbfae, type: 2}
@@ -2959,8 +2963,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
-  m_fontSizeBase: 80
+  m_fontSize: 64
+  m_fontSizeBase: 64
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3155,7 +3159,7 @@ GameObject:
   - component: {fileID: 1868943252}
   - component: {fileID: 1868943251}
   m_Layer: 5
-  m_Name: Image
+  m_Name: PlayerStoneImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

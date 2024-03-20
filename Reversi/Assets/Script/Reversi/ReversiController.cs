@@ -60,14 +60,9 @@ namespace Reversi
                     break;
             }
 
-            reversiUIInit();
+            ReversiUIInit();
 
-            reversiFinishUI.Init();
-
-            reversiFinishUI.TitleBackSubject.Subscribe(_ =>
-            {
-                TitleBack();
-            }).AddTo(this);
+            reversiBoard.Init();
 
             reversiBoard.GameFinishedSubject.Subscribe(_ =>
             {
@@ -97,8 +92,6 @@ namespace Reversi
             {
                 SetStoneNum(stoneNumInfo);
             }).AddTo(this);
-
-            reversiBoard.Init();
         }
         #endregion
 
@@ -106,11 +99,18 @@ namespace Reversi
         /// <summary>
         /// UI表示の初期化
         /// </summary>
-        private void reversiUIInit()
+        private void ReversiUIInit()
         {
             reversiUI.Init();
 
             reversiUI.ViewStoneImage(playerStoneType);
+
+            reversiFinishUI.Init();
+
+            reversiFinishUI.TitleBackSubject.Subscribe(_ =>
+            {
+                TitleBack();
+            }).AddTo(this);
         }
 
         /// <summary>
