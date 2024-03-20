@@ -52,7 +52,8 @@ namespace Reversi
                     playerStoneType = GetRandomPlayer();
                     break;
                 case GameMode.TowPlay:
-                    playerStoneType = GetRandomPlayer();
+                    // ふたりで遊ぶ時は黒固定
+                    playerStoneType = StoneType.Black;
                     break;
                 case GameMode.Online:
                     DeterminePlayerOrder();
@@ -70,7 +71,16 @@ namespace Reversi
 
             reversiBoard.GameFinishedSubject.Subscribe(_ =>
             {
-                Outcome();
+                // ゲームモードがふたりで遊ぶ以外の場合
+                if (GameDataManager.instance.GetGameMode() != GameMode.TowPlay)
+                {
+                    Outcome();
+                }
+                else
+                {
+                    TowPlayOutcome();
+                }
+                
             }).AddTo(this);
 
             // 相手の手番を示すUIを表示する処理
@@ -138,6 +148,27 @@ namespace Reversi
         }
 
         /// <summary>
+        /// 二人で遊ぶ時の勝敗を確認する
+        /// </summary>
+        private void TowPlayOutcome()
+        {
+            if (playerStoneNum > opponentStoneNum)
+            {
+                reversiFinishUI.BlackWinUI();
+            }
+            else if (playerStoneNum == opponentStoneNum)
+            {
+                reversiFinishUI.DrowUI();
+            }
+            else
+            {
+                reversiFinishUI.WhiteWinUI();
+            }
+
+            reversiFinishUI.FinishWindowUI();
+        }
+
+        /// <summary>
         /// タイトルシーン遷移時の処理
         /// </summary>
         private void TitleBack()
@@ -151,19 +182,19 @@ namespace Reversi
         }
 
         /// <summary>
-        /// オンライン対戦で先攻後攻を決める処理
-        /// </summary>
-        private void DeterminePlayerOrder()
-        {
-            playerStoneType = GameDataManager.instance.GetIsPlayer() ? StoneType.Black : StoneType.White;
-        }
-
-        /// <summary>
         /// 先攻後攻の結果を返す
         /// </summary>
         private StoneType GetRandomPlayer()
         {
             return Random.Range(0, 2) == 0 ? StoneType.Black : StoneType.White;
+        }
+
+        /// <summary>
+        /// オンライン対戦で先攻後攻を決める処理
+        /// </summary>
+        private void DeterminePlayerOrder()
+        {
+            playerStoneType = GameDataManager.instance.GetIsPlayer() ? StoneType.Black : StoneType.White;
         }
         #endregion
     }
