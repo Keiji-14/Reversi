@@ -29,6 +29,8 @@ namespace Reversi
         private const float tileSize = 115f;
         /// <summary>マスとマスの幅間隔</summary>
         private const float spacing = 5f;
+        /// <summary>AIターン中の待機時間</summary>
+        private const float AITurnWaitTime = 1f;
         /// <summary>手番の判定に使用</summary>
         private StoneType stoneTypeTurns;
         /// <summary>盤面のマス</summary>
@@ -86,7 +88,7 @@ namespace Reversi
                 }
             }
 
-            yield return new WaitForSeconds(2.0f);
+            yield return new WaitForSeconds(AITurnWaitTime);
 
             if (bestMoves.Count > 0)
             {
