@@ -49,10 +49,9 @@ namespace Reversi
             switch (GameDataManager.instance.GetGameMode())
             {
                 case GameMode.OnePlay:
-                    playerStoneType = GetRandomPlayer();
+                    playerStoneType = StoneType.Black;
                     break;
                 case GameMode.TowPlay:
-                    // ふたりで遊ぶ時は黒固定
                     playerStoneType = StoneType.Black;
                     break;
                 case GameMode.Online:
@@ -75,7 +74,6 @@ namespace Reversi
                 {
                     TowPlayOutcome();
                 }
-                
             }).AddTo(this);
 
             // 相手の手番を示すUIを表示する処理
@@ -85,6 +83,12 @@ namespace Reversi
                 if (GameDataManager.instance.GetGameMode() != GameMode.TowPlay)
                 {
                     reversiUI.OpponentTurnsUI(playerStoneType != stoneType ? true : false);
+                }
+                // ゲームモードがひとりで遊ぶの場合で相手の手番の場合
+                if (GameDataManager.instance.GetGameMode() == GameMode.OnePlay &&
+                    playerStoneType != stoneType)
+                {
+                    StartCoroutine(reversiBoard.AIMoveTurn());
                 }
             }).AddTo(this);
 
@@ -179,14 +183,6 @@ namespace Reversi
                 NetworkManager.instance.LeaveRoom();
             }
             SceneLoader.Instance().Load(SceneLoader.SceneName.Title);
-        }
-
-        /// <summary>
-        /// 先攻後攻の結果を返す
-        /// </summary>
-        private StoneType GetRandomPlayer()
-        {
-            return Random.Range(0, 2) == 0 ? StoneType.Black : StoneType.White;
         }
 
         /// <summary>

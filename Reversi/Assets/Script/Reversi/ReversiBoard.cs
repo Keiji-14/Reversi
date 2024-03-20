@@ -1,6 +1,8 @@
 ﻿using GameData;
 using Audio;
 using Photon.Pun;
+using System.Collections;
+using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 
@@ -54,6 +56,43 @@ namespace Reversi
             SetupInitialStones();
 
             StoneTypeTurnsSubject.OnNext(stoneTypeTurns);
+        }
+
+        /// <summary>
+        /// ひとりで遊ぶ時の対戦相手の処理
+        /// </summary>
+        public IEnumerator AIMoveTurn()
+        {
+            List<(int, int)> bestMoves = new List<(int, int)>(); // 最適なマスのリスト
+            int maxFlippedCount = 0; // ひっくり返す石の最大数
+
+            foreach (var boardTile in boardTiles)
+            {
+                var row = boardTile.GetTileInfo().row;
+                var col = boardTile.GetTileInfo().col;
+
+                // 空いているマスかどうかをチェック
+                if (!IsValidSet(row, col, StoneType.White)) 
+                    continue;
+
+                int flippedCount = CountFlippedStones(row, col, StoneType.White);
+
+                // ひっくり返す石の数が最大のマスを更新
+                if (flippedCount > maxFlippedCount)
+                {
+                    maxFlippedCount = flippedCount;
+                    bestMoves.Clear(); // 最適なマスのリストをリセット
+                    bestMoves.Add((row, col));
+                }
+            }
+
+            yield return new WaitForSeconds(2.0f);
+
+            if (bestMoves.Count > 0)
+            {
+                (int bestRow, int bestCol) = bestMoves[Random.Range(0, bestMoves.Count)];
+                PlaceStone(bestRow, bestCol);
+            }
         }
         #endregion
 
@@ -386,6 +425,53 @@ namespace Reversi
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// 指定した位置に石を置いた場合にひっくり返す石の数を数える
+        /// </summary>
+        private int CountFlippedStones(int row, int col, StoneType stoneType)
+        {
+            int flippedCount = 0;
+
+            // 全方向のマスを確認する
+            for (int dr = -1; dr <= 1; dr++)
+            {
+                for (int dc = -1; dc <= 1; dc++)
+                {
+                    // 自分自身の方向はスキップ
+                    if (dr == 0 && dc == 0) continue;
+
+                    int r = row + dr;
+                    int c = col + dc;
+
+                    bool canFlip = false;
+
+                    // 反転できる相手の石があるかどうかを確認
+                    while (IsInsideBoard(r, c) && boardTiles[r, c].SettedStone() && boardTiles[r, c].GetStoneType() == GetOpponentType(stoneType))
+                    {
+                        canFlip = true;
+                        r += dr;
+                        c += dc;
+                    }
+
+                    // 反転処理
+                    if (canFlip && IsInsideBoard(r, c) && boardTiles[r, c].SettedStone() && boardTiles[r, c].GetStoneType() == stoneType)
+                    {
+                        r = row + dr;
+                        c = col + dc;
+
+                        while (IsInsideBoard(r, c) && boardTiles[r, c].SettedStone() && boardTiles[r, c].GetStoneType() == GetOpponentType(stoneType))
+                        {
+                            flippedCount++; // ひっくり返す石の数を増やす
+                            r += dr;
+                            c += dc;
+                        }
+                    }
+                }
+            }
+
+            return flippedCount;
         }
 
         /// <summary>
