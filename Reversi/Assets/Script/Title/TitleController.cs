@@ -29,6 +29,9 @@ namespace Title
         /// <summary>オンライン対戦開始ボタンを選択した時の処理 </summary>
         private IObservable<Unit> InputOnlinePlayerObservable =>
             onlinePlayerBtn.OnClickAsObservable();
+        /// <summary>マイページボタンを選択した時の処理 </summary>
+        private IObservable<Unit> InputMyPageObservable =>
+            myPageBtn.OnClickAsObservable();
         #endregion
 
         #region SerializeField
@@ -38,10 +41,14 @@ namespace Title
         [SerializeField] private Button twoPlayerBtn;
         /// <summary>オンライン対戦開始ボタン</summary>
         [SerializeField] private Button onlinePlayerBtn;
+        /// <summary>マイページボタン</summary>
+        [SerializeField] private Button myPageBtn;
         /// <summary>初回起動時の処理</summary>
         [SerializeField] private FirstStartup firstStartup;
         /// <summary>タイトル画面のUI</summary>
         [SerializeField] private TitleUI titleUI;
+        /// <summary>マイページの処理</summary>
+        [SerializeField] private MyPage myPage;
         #endregion
 
         #region PublicMethod
@@ -56,6 +63,8 @@ namespace Title
             }
 
             titleUI.Init();
+
+            myPage.Init();
 
             // ひとりで遊ぶボタンを押した時の処理
             InputOnePlayerObservable.Subscribe(_ =>
@@ -78,6 +87,11 @@ namespace Title
             {
                 SE.instance.Play(SE.SEName.ButtonSE);
                 titleUI.SwicthMatchingWindow(true);
+            }).AddTo(this);
+
+            InputMyPageObservable.Subscribe(_ =>
+            {
+                myPage.OpenMyPage();
             }).AddTo(this);
 
             // マッチングボタンが押された時の処理

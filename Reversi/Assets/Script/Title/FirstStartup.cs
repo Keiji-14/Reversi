@@ -64,9 +64,11 @@ namespace Title
         #endregion
 
         #region PrivateMethod
-        void OnInputFieldValueChanged(string value)
+        /// <summary>
+        /// ひらがな、カタカナ、英語、一部の記号以外の文字を削除する処理
+        /// </summary>
+        private void OnInputFieldValueChanged(string value)
         {
-            // 正規表現を使用して、ひらがな、カタカナ、英語、一部の記号以外の文字を削除する
             string filteredText = System.Text.RegularExpressions.Regex.Replace(value, "[^ぁ-んァ-ンa-zA-Z0-9!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]+", "");
 
             // テキストを更新する
