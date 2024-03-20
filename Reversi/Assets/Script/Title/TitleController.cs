@@ -1,6 +1,7 @@
 ﻿using NetWork;
 using Scene;
 using GameData;
+using Audio;
 using Reversi;
 using System;
 using System.Collections;
@@ -59,6 +60,7 @@ namespace Title
             // ひとりで遊ぶボタンを押した時の処理
             InputOnePlayerObservable.Subscribe(_ =>
             {
+                SE.instance.Play(SE.SEName.ButtonSE);
                 GameDataManager.instance.SetGameMode(GameMode.OnePlay);
                 SceneLoader.Instance().Load(SceneLoader.SceneName.Reversi);
             }).AddTo(this);
@@ -66,6 +68,7 @@ namespace Title
             // ふたりで遊ぶボタンを押した時の処理
             InputTwoPlayerObservable.Subscribe(_ =>
             {
+                SE.instance.Play(SE.SEName.ButtonSE);
                 GameDataManager.instance.SetGameMode(GameMode.TowPlay);
                 SceneLoader.Instance().Load(SceneLoader.SceneName.Reversi);
             }).AddTo(this);
@@ -73,6 +76,7 @@ namespace Title
             // オンライン対戦ボタンを押した時の処理
             InputOnlinePlayerObservable.Subscribe(_ =>
             {
+                SE.instance.Play(SE.SEName.ButtonSE);
                 titleUI.SwicthMatchingWindow(true);
             }).AddTo(this);
 
@@ -116,6 +120,7 @@ namespace Title
         private IEnumerator PlayerMatched()
         {
             titleUI.SwicthMatchedUI();
+            SE.instance.Play(SE.SEName.MatchingSE);
 
             yield return new WaitForSeconds(matchedWaitSeconds);
 

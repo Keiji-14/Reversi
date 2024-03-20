@@ -1,4 +1,5 @@
 ﻿using GameData;
+using Audio;
 using Photon.Pun;
 using UniRx;
 using UnityEngine;
@@ -189,6 +190,8 @@ namespace Reversi
             ReversiStone stone = Instantiate(reversiStoneObj, stoneGroup);
             boardTiles[row, col].SetStone(stone, stoneTypeTurns);
 
+            SE.instance.Play(SE.SEName.PlaceStoneSE);
+
             // 反転処理
             FlipStones(row, col, stoneTypeTurns);
 
@@ -219,6 +222,8 @@ namespace Reversi
         {
             ReversiStone stone = Instantiate(reversiStoneObj, stoneGroup);
             boardTiles[row, col].SetStone(stone, stoneTypeTurns);
+
+            SE.instance.Play(SE.SEName.PlaceStoneSE);
 
             // 反転処理
             FlipStones(row, col, stoneTypeTurns);

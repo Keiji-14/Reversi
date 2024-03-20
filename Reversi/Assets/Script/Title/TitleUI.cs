@@ -1,4 +1,5 @@
 ﻿using NetWork;
+using Audio;
 using System;
 using UniRx;
 using UnityEngine;
@@ -51,12 +52,14 @@ namespace Title
             // マッチングボタンを押した時の処理
             InputMatchingBtnObservable.Subscribe(_ =>
             {
+                SE.instance.Play(SE.SEName.ButtonSE);
                 MatchingStartSubject.OnNext(Unit.Default);
             }).AddTo(this);
 
             // マッチングウィンドウの閉じるボタンを押した時の処理
             InputCloseMatchingWindowBtnObservable.Subscribe(_ =>
             {
+                SE.instance.Play(SE.SEName.ButtonSE);
                 SwicthMatchingWindow(false);
                 SwicthMatchingUI();
                 NetworkManager.instance.LeaveRoom();
