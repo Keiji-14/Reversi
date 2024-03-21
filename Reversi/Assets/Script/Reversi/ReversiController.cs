@@ -61,8 +61,6 @@ namespace Reversi
 
             ReversiUIInit();
 
-            reversiBoard.Init();
-
             reversiBoard.GameFinishedSubject.Subscribe(_ =>
             {
                 // ゲームモードがふたりで遊ぶ以外の場合
@@ -96,6 +94,8 @@ namespace Reversi
             {
                 SetStoneNum(stoneNumInfo);
             }).AddTo(this);
+
+            reversiBoard.Init();
         }
         #endregion
 
