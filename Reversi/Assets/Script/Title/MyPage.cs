@@ -54,10 +54,10 @@ namespace Title
 
                     PlayerData playerData = new PlayerData(nameInputField.text);
                     GameDataManager.instance.SetPlayerData(playerData);
-
-                    SE.instance.Play(SE.SEName.ButtonSE);
                 }
                 myPageWindow.SetActive(false);
+
+                SE.instance.Play(SE.SEName.ButtonSE);
             }).AddTo(this);
 
             InputCloseBtnObservable.Subscribe(_ =>

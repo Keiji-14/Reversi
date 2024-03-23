@@ -89,8 +89,10 @@ namespace Title
                 titleUI.SwicthMatchingWindow(true);
             }).AddTo(this);
 
+            // マイページボタンを押した時の処理
             InputMyPageObservable.Subscribe(_ =>
             {
+                SE.instance.Play(SE.SEName.ButtonSE);
                 myPage.OpenMyPage();
             }).AddTo(this);
 
@@ -98,6 +100,7 @@ namespace Title
             titleUI.MatchingStartSubject.Subscribe(_ =>
             {
                 IsMatching();
+                SE.instance.Play(SE.SEName.ButtonSE);
             }).AddTo(this);
 
             // 対戦画面に移動する時の処理
