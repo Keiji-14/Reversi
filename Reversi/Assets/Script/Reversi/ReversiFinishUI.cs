@@ -1,4 +1,4 @@
-﻿using NetWork;
+﻿using Audio;
 using System;
 using UniRx;
 using UnityEngine;
@@ -50,6 +50,7 @@ namespace Reversi
             // タイトルに戻るボタンを押した時の処理
             InputTitleBackBtnObservable.Subscribe(_ =>
             {
+                SE.instance.Play(SE.SEName.ButtonSE);
                 TitleBackSubject.OnNext(Unit.Default);
             }).AddTo(this);
         }

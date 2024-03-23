@@ -1,4 +1,5 @@
-﻿using GameData;
+﻿using Audio;
+using GameData;
 using System;
 using UniRx;
 using UnityEngine;
@@ -58,6 +59,8 @@ namespace Title
                 PlayerData playerData = new PlayerData(nameInputField.text);
                 GameDataManager.instance.SetPlayerData(playerData);
 
+                SE.instance.Play(SE.SEName.ButtonSE);
+
                 firstStartupWindow.SetActive(false);
             }).AddTo(this);
         }
@@ -69,7 +72,7 @@ namespace Title
         /// </summary>
         private void OnInputFieldValueChanged(string value)
         {
-            string filteredText = System.Text.RegularExpressions.Regex.Replace(value, "[^ぁ-んァ-ンa-zA-Z0-9!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]+", "");
+            string filteredText = System.Text.RegularExpressions.Regex.Replace(value, "[^ぁ-んァ-ンa-zA-Z0-9!\"#$%&'()*+,./:;<=>?@[\\]^_`{|}ー~]+", "");
 
             // テキストを更新する
             nameInputField.text = filteredText;
